@@ -14,6 +14,11 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
+
+/* Mouse settings - must be before pointing.h */
+#define ZMK_POINTING_DEFAULT_MOVE_VAL 600
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 20
+
 #include <dt-bindings/zmk/pointing.h>
 #include <input/processors.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
@@ -32,11 +37,6 @@
 #define THUMBS 30 31 32 33 34 35
 
 #define QUICK_TAP_MS 175
-
-
-/* Mouse settings */
-#define ZMK_POINTING_DEFAULT_MOVE_VAL 600
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 20
 
 &mmv {
     acceleration-exponent = <1>;
@@ -58,6 +58,11 @@
 #define U_WH_D &msc SCRL_DOWN
 #define U_WH_L &msc SCRL_LEFT
 #define U_WH_R &msc SCRL_RIGHT
+
+/* numword continue-list override */
+&num_word {
+    continue-list = <BACKSPACE DELETE DOT COMMA PLUS MINUS STAR FSLH EQUAL UNDER>;
+};
 
 / {
     behaviors {
@@ -346,11 +351,6 @@
                 sequence = <B O O T>;
             };
         };
-    };
-
-    /* numword continue-list override */
-    &num_word {
-        continue-list = <BACKSPACE DELETE DOT COMMA PLUS MINUS STAR FSLH EQUAL UNDER>;
     };
 
     combos {
