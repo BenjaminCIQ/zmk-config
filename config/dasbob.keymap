@@ -687,13 +687,13 @@
             display-name = "Mouse";
             bindings = <
 //╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮   ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
-    &trans        &trans        &trans        &trans        &trans            &trans        &kp PG_UP     U_MS_U        &kp PG_DN     &trans
+    &trans        &trans        &trans        &trans        &trans            &trans        &kp PG_UP     &mmv MOVE_UP  &kp PG_DN     &trans
 //├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &trans        &trans        &trans        &trans        &trans            U_WH_L        U_MS_L        U_MS_D        U_MS_R        U_WH_R
+    &trans        &trans        &trans        &trans        &trans            &msc SCRL_LEFT &mmv MOVE_LEFT &mmv MOVE_DOWN &mmv MOVE_RIGHT &msc SCRL_RIGHT
 //├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
     &trans        &trans        &trans        &trans        &trans            &trans        &mkp LCLK     &mkp MCLK     &mkp RCLK     &trans
 //╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
-                                &trans        &trans        &trans            U_WH_U        U_WH_D        &trans
+                                &trans        &trans        &trans            &msc SCRL_UP  &msc SCRL_DOWN &trans
 //                            ╰─────────────┴─────────────┴─────────────╯   ╰─────────────┴─────────────┴─────────────╯
             >;
         };
