@@ -34,6 +34,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add draw/*.svg draw/*.yaml
+          git add draw/*.svg
           git diff --staged --quiet || git commit -m "Update keymap images [skip ci]"
           git push
