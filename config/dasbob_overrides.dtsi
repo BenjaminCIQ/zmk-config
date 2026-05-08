@@ -8,8 +8,7 @@
 
 /* Autoshift behaviors */
 
-ZMK_MACRO(shifted,
-    #binding-cells = <1>;
+ZMK_MACRO_ONE_PARAM(shifted,
     bindings = <&macro_press &kp LSHFT &macro_param_1to1>,
                <&macro_tap &kp MACRO_PLACEHOLDER>,
                <&macro_release &kp LSHFT>;)
@@ -17,8 +16,7 @@ ZMK_MACRO(shifted,
 ZMK_HOLD_TAP(as_ht, bindings = <&shifted>, <&kp>;
              tapping-term-ms = <190>; flavor = "tap-preferred";)
 
-ZMK_MACRO(as,
-    #binding-cells = <1>;
+ZMK_MACRO_ONE_PARAM(as,
     bindings = <&macro_press &macro_param_1to1 &macro_param_1to2 &as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>,
                <&macro_pause_for_release>,
                <&macro_release &macro_param_1to1 &macro_param_1to2 &as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>;)
