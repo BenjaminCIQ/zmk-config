@@ -192,7 +192,7 @@
             compatible = "zmk,behavior-tri-state";
             #binding-cells = <0>;
             bindings = <&tog MOUSE>, <&none>, <&tog MOUSE>;
-            ignored-key-positions = <LT1 LT2 LH0 LH1 RT1 RT2 RT3 RM0 RM1 RM2 RM3 RM4 RB1 RB2 RB3 RH0 RH1>;
+            ignored-key-positions = <3 2 32 31 6 7 8 15 16 17 18 19 26 27 28 33 34>;
             ignored-layers = <MOUSE NAV FN>;
         };
 
@@ -281,7 +281,7 @@
             compatible = "zmk,behavior-tri-state";
             #binding-cells = <0>;
             bindings = <&kt LALT>, <&kp TAB>, <&kt LALT>;
-            ignored-key-positions = <LT2 RT2 RM1 RM2 RM3>;
+            ignored-key-positions = <2 7 16 17 18>;
         };
 
         /* Autoshift - hold for shifted version */
