@@ -25,6 +25,11 @@ jobs:
         run: nix develop --command just init
       - name: Draw keymap
         run: nix develop --command just draw
+      - name: Upload keymap images
+        uses: actions/upload-artifact@v4
+        with:
+          name: keymap
+          path: draw/*.svg
       - name: Commit updated images
         run: |
           git config user.name "github-actions[bot]"
