@@ -1,3 +1,13 @@
+# Fork of urob's zmk-config with workman layout and customisations
+
+Fork adds:
+
+
+<img src="./draw/overview.svg" alt="Keymap layout" width="100%" /><br />
+([Click here](https://raw.githubusercontent.com/urob/zmk-config/refs/heads/main/draw/base.svg)
+for a breakdown by layer – powered by
+[keymap-drawer](https://github.com/caksoylar/keymap-drawer).)
+
 # urob's zmk-config
 
 This is my personal [ZMK firmware](https://github.com/zmkfirmware/zmk/)
@@ -23,11 +33,6 @@ manifest](https://github.com/urob/zmk-config/blob/main/config/west.yml).
   [zmk-helpers](https://github.com/urob/zmk-helpers)
 - Fully automated, nix-powered [local build environment](#local-build-environment), includes
   `dts-format` and `keymap-drawer`
-
-<img src="./draw/overview.svg" alt="Keymap layout" width="100%" /><br />
-([Click here](https://raw.githubusercontent.com/urob/zmk-config/refs/heads/main/draw/base.svg)
-for a breakdown by layer – powered by
-[keymap-drawer](https://github.com/caksoylar/keymap-drawer).)
 
 ## Timeless homerow mods
 
