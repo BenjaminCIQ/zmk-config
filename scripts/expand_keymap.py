@@ -1,8 +1,289 @@
-/*
+#!/usr/bin/env python3
+"""
+ZMK Keymap Expander
+
+Expands urob's zmk-helpers macros into standard DTS format compatible with
+Nick Coutsos' Keymap Editor.
+
+Usage:
+    python expand_keymap.py [--output OUTPUT] [--commit COMMIT]
+
+Outputs expanded keymap to stdout or specified file.
+"""
+
+import argparse
+import re
+import subprocess
+import sys
+from pathlib import Path
+from datetime import datetime
+
+# Key position mappings (36-key layout)
+KEY_POSITIONS = {
+    'LT4': 0, 'LT3': 1, 'LT2': 2, 'LT1': 3, 'LT0': 4,
+    'RT0': 5, 'RT1': 6, 'RT2': 7, 'RT3': 8, 'RT4': 9,
+    'LM4': 10, 'LM3': 11, 'LM2': 12, 'LM1': 13, 'LM0': 14,
+    'RM0': 15, 'RM1': 16, 'RM2': 17, 'RM3': 18, 'RM4': 19,
+    'LB4': 20, 'LB3': 21, 'LB2': 22, 'LB1': 23, 'LB0': 24,
+    'RB0': 25, 'RB1': 26, 'RB2': 27, 'RB3': 28, 'RB4': 29,
+    'LH2': 30, 'LH1': 31, 'LH0': 32,
+    'RH0': 33, 'RH1': 34, 'RH2': 35,
+}
+
+# Positional groups
+KEYS_L = [0, 1, 2, 3, 4, 10, 11, 12, 13, 14, 20, 21, 22, 23, 24]
+KEYS_R = [5, 6, 7, 8, 9, 15, 16, 17, 18, 19, 25, 26, 27, 28, 29]
+THUMBS = [30, 31, 32, 33, 34, 35]
+
+# Layer name to index mapping
+LAYERS = {'DEF': 0, 'NAV': 1, 'FN': 2, 'NUM': 3, 'SYS': 4, 'MOUSE': 5}
+
+# Behavior type to compatible string and binding-cells
+BEHAVIOR_TYPES = {
+    'hold_tap': ('zmk,behavior-hold-tap', 2),
+    'mod_morph': ('zmk,behavior-mod-morph', 0),
+    'tap_dance': ('zmk,behavior-tap-dance', 0),
+    'tri_state': ('zmk,behavior-tri-state', 0),
+    'adaptive_key': ('zmk,behavior-adaptive-key', 0),
+    'macro': ('zmk,behavior-macro', 0),
+}
+
+
+def get_git_commit():
+    """Get current git commit hash."""
+    try:
+        result = subprocess.run(
+            ['git', 'rev-parse', '--short', 'HEAD'],
+            capture_output=True, text=True, check=True
+        )
+        return result.stdout.strip()
+    except Exception:
+        return 'unknown'
+
+
+def resolve_key_positions(pos_str):
+    """Convert position names (LT1 LT2) to numbers."""
+    positions = []
+    for token in pos_str.split():
+        token = token.strip()
+        if token in KEY_POSITIONS:
+            positions.append(KEY_POSITIONS[token])
+        elif token == 'KEYS_L':
+            positions.extend(KEYS_L)
+        elif token == 'KEYS_R':
+            positions.extend(KEYS_R)
+        elif token == 'THUMBS':
+            positions.extend(THUMBS)
+        elif token.isdigit():
+            positions.append(int(token))
+    return positions
+
+
+def resolve_layers(layer_str):
+    """Convert layer names to indices."""
+    layers = []
+    for token in layer_str.split():
+        token = token.strip()
+        if token in LAYERS:
+            layers.append(LAYERS[token])
+        elif token.isdigit():
+            layers.append(int(token))
+    return layers
+
+
+def parse_combo(line):
+    """Parse ZMK_COMBO macro call."""
+    # ZMK_COMBO(name, binding, positions, layers, timeout, idle[, hold, side])
+    match = re.match(r'ZMK_COMBO\s*\(\s*(\w+)\s*,\s*(.+?)\s*,\s*(.+?)\s*,\s*(.+?)\s*,\s*(\w+)\s*,\s*(\w+)(?:\s*,\s*(\w+)\s*,\s*(\w+))?\s*\)', line)
+    if not match:
+        return None
+
+    name = match.group(1)
+    binding = match.group(2).strip()
+    positions = resolve_key_positions(match.group(3))
+    layers = resolve_layers(match.group(4))
+    timeout = match.group(5)
+    idle = match.group(6)
+    hold = match.group(7)  # Optional HRM hold key
+    side = match.group(8)  # Optional HRM side
+
+    return {
+        'name': name,
+        'binding': binding,
+        'positions': positions,
+        'layers': layers,
+        'timeout': timeout,
+        'idle': idle,
+        'hold': hold,
+        'side': side,
+    }
+
+
+def expand_combo(combo, hrm_combos):
+    """Expand combo to DTS format."""
+    lines = []
+    name = combo['name']
+
+    # If combo has HRM (8-arg version), generate the hm_combo behavior first
+    if combo['hold'] and combo['side']:
+        hrm_name = f"hm_combo_{name}"
+        side_positions = KEYS_L if combo['side'] == 'KEYS_L' else KEYS_R
+        trigger_positions = side_positions + THUMBS
+
+        hrm_combos.append({
+            'name': hrm_name,
+            'hold': combo['hold'],
+            'tap': combo['binding'],
+            'trigger_positions': trigger_positions,
+        })
+        binding = f"&{hrm_name} {combo['hold']} 0"
+    else:
+        binding = combo['binding']
+
+    lines.append(f"        combo_{name} {{")
+    lines.append(f"            bindings = <{binding}>;")
+    lines.append(f"            key-positions = <{' '.join(map(str, combo['positions']))}>;")
+    lines.append(f"            layers = <{' '.join(map(str, combo['layers']))}>;")
+
+    # Resolve timeout/idle constants
+    timeout = combo['timeout']
+    if timeout == 'COMBO_TERM_FAST':
+        timeout = '18'
+    elif timeout == 'COMBO_TERM_SLOW':
+        timeout = '30'
+
+    idle = combo['idle']
+    if idle == 'COMBO_IDLE_FAST':
+        idle = '150'
+    elif idle == 'COMBO_IDLE_SLOW':
+        idle = '50'
+
+    lines.append(f"            timeout-ms = <{timeout}>;")
+    lines.append(f"            require-prior-idle-ms = <{idle}>;")
+    lines.append("        };")
+
+    return '\n'.join(lines)
+
+
+def expand_hrm_combo_behavior(hrm):
+    """Expand HRM combo behavior to DTS format."""
+    lines = []
+    lines.append(f"        {hrm['name']}: {hrm['name']} {{")
+    lines.append('            compatible = "zmk,behavior-hold-tap";')
+    lines.append('            #binding-cells = <2>;')
+    lines.append(f"            bindings = <&kp>, <{hrm['tap']}>;")
+    lines.append('            flavor = "balanced";')
+    lines.append('            tapping-term-ms = <280>;')
+    lines.append('            quick-tap-ms = <175>;')
+    lines.append('            require-prior-idle-ms = <150>;')
+    lines.append('            hold-trigger-on-release;')
+    lines.append(f"            hold-trigger-key-positions = <{' '.join(map(str, hrm['trigger_positions']))}>;")
+    lines.append("        };")
+    return '\n'.join(lines)
+
+
+def parse_leader_sequence(line):
+    """Parse ZMK_LEADER_SEQUENCE macro call."""
+    match = re.match(r'ZMK_LEADER_SEQUENCE\s*\(\s*(\w+)\s*,\s*(.+?)\s*,\s*(.+?)\s*\)', line)
+    if not match:
+        return None
+
+    return {
+        'name': match.group(1),
+        'binding': match.group(2).strip(),
+        'sequence': match.group(3).strip(),
+    }
+
+
+def expand_leader_sequences(sequences):
+    """Expand leader sequences into leader behavior node."""
+    lines = []
+    lines.append("        leader: leader {")
+    lines.append('            compatible = "zmk,behavior-leader-key";')
+    lines.append('            #binding-cells = <0>;')
+    lines.append('            ignore-keys = <LSHFT RSHFT>;')
+
+    for seq in sequences:
+        lines.append(f"            leader_sequence_{seq['name']} {{")
+        lines.append(f"                bindings = <{seq['binding']}>;")
+        lines.append(f"                sequence = <{seq['sequence']}>;")
+        lines.append("            };")
+
+    lines.append("        };")
+    return '\n'.join(lines)
+
+
+def parse_behavior(line, behavior_type):
+    """Parse ZMK_HOLD_TAP, ZMK_MOD_MORPH, etc."""
+    pattern = rf'ZMK_({behavior_type.upper()})\s*\(\s*(\w+)\s*,(.+)\)'
+    match = re.match(pattern, line, re.IGNORECASE)
+    if not match:
+        # Try alternate pattern for multi-line or complex cases
+        pattern = rf'ZMK_({behavior_type.upper()})\s*\(\s*(\w+)\s*,'
+        match = re.match(pattern, line, re.IGNORECASE)
+        if match:
+            return {'name': match.group(2), 'type': behavior_type, 'props': 'INCOMPLETE'}
+        return None
+
+    return {
+        'name': match.group(2),
+        'type': behavior_type,
+        'props': match.group(3).strip().rstrip(')'),
+    }
+
+
+def parse_keymap_files(config_dir):
+    """Parse base.keymap and included files."""
+    config_path = Path(config_dir)
+
+    base_keymap = config_path / 'base.keymap'
+    combos_file = config_path / 'combos.dtsi'
+    leader_file = config_path / 'leader.dtsi'
+    mouse_file = config_path / 'mouse.dtsi'
+
+    result = {
+        'combos': [],
+        'leader_sequences': [],
+        'behaviors': [],
+        'layers': [],
+        'mouse_config': '',
+    }
+
+    # Parse combos
+    if combos_file.exists():
+        content = combos_file.read_text()
+        for line in content.split('\n'):
+            line = line.strip()
+            if line.startswith('ZMK_COMBO'):
+                combo = parse_combo(line)
+                if combo:
+                    result['combos'].append(combo)
+
+    # Parse leader sequences
+    if leader_file.exists():
+        content = leader_file.read_text()
+        for line in content.split('\n'):
+            line = line.strip()
+            if line.startswith('ZMK_LEADER_SEQUENCE'):
+                seq = parse_leader_sequence(line)
+                if seq:
+                    result['leader_sequences'].append(seq)
+
+    # Parse mouse config (mostly passthrough)
+    if mouse_file.exists():
+        result['mouse_config'] = mouse_file.read_text()
+
+    return result
+
+
+def generate_header(commit_hash):
+    """Generate file header with metadata."""
+    timestamp = datetime.now().strftime('%Y-%m-%d')
+    return f'''/*
  * ZMK Keymap - Expanded from urob/zmk-config
  *
- * Generated: 2026-05-08
- * Source commit: e5c8474
+ * Generated: {timestamp}
+ * Source commit: {commit_hash}
  *
  * This file is auto-generated by expand_keymap.py for Keymap Editor compatibility.
  * Do not edit this file directly - edit the source and re-expand.
@@ -30,8 +311,21 @@
 #define THUMBS 30 31 32 33 34 35
 
 #define QUICK_TAP_MS 175
+'''
 
 
+def generate_expanded_keymap(config_dir, commit_hash=None):
+    """Generate complete expanded keymap."""
+    if commit_hash is None:
+        commit_hash = get_git_commit()
+
+    parsed = parse_keymap_files(config_dir)
+
+    output = []
+    output.append(generate_header(commit_hash))
+
+    # Mouse settings
+    output.append('''
 /* Mouse settings */
 #define ZMK_POINTING_DEFAULT_MOVE_VAL 600
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 20
@@ -56,10 +350,16 @@
 #define U_WH_D &msc SCRL_DOWN
 #define U_WH_L &msc SCRL_LEFT
 #define U_WH_R &msc SCRL_RIGHT
+''')
 
-/ {
-    behaviors {
-        sk {
+    # Start root node
+    output.append('/ {')
+
+    # Behaviors section
+    output.append('    behaviors {')
+
+    # Sticky key config
+    output.append('''        sk {
             release-after-ms = <900>;
             quick-release;
         };
@@ -80,8 +380,10 @@
             quick-tap-ms = <220>;
             hold-trigger-key-positions = <0>;
         };
+''')
 
-        /* Homerow mods */
+    # Homerow mods
+    output.append('''        /* Homerow mods */
         hml: hml {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -105,8 +407,13 @@
             hold-trigger-on-release;
             hold-trigger-key-positions = <KEYS_L THUMBS>;
         };
+''')
 
-        /* Nav cluster */
+    # HRM combo behaviors (generated from 8-arg combos)
+    hrm_combos = []
+
+    # Nav cluster behaviors
+    output.append('''        /* Nav cluster */
         masked_home: masked_home {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
@@ -140,8 +447,10 @@
             quick-tap-ms = <220>;
             hold-trigger-key-positions = <0>;
         };
+''')
 
-        /* Magic shift & smart behaviors */
+    # Magic shift and smart behaviors
+    output.append('''        /* Magic shift & smart behaviors */
         magic_shift: magic_shift {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -193,8 +502,10 @@
             ignored-key-positions = <LT1 LT2 LH0 LH1 RT1 RT2 RT3 RM0 RM1 RM2 RM3 RM4 RB1 RB2 RB3 RH0 RH1>;
             ignored-layers = <MOUSE NAV FN>;
         };
+''')
 
-        /* Morphs */
+    # Morphs and other behaviors
+    output.append('''        /* Morphs */
         comma_morph: comma_morph {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
@@ -281,8 +592,10 @@
             bindings = <&kt LALT>, <&kp TAB>, <&kt LALT>;
             ignored-key-positions = <LT2 RT2 RM1 RM2 RM3>;
         };
+''')
 
-        /* Macros */
+    # Macros
+    output.append('''        /* Macros */
         dot_spc: dot_spc {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -296,396 +609,53 @@
             #binding-cells = <0>;
             bindings = <&sk LSHFT &leader>;
         };
+''')
 
+    # Leader key with sequences
+    if parsed['leader_sequences']:
+        output.append('')
+        output.append(expand_leader_sequences(parsed['leader_sequences']))
 
-        leader: leader {
-            compatible = "zmk,behavior-leader-key";
-            #binding-cells = <0>;
-            ignore-keys = <LSHFT RSHFT>;
-            leader_sequence_de_ae {
-                bindings = <&uc UC_DE_AE>;
-                sequence = <A>;
-            };
-            leader_sequence_de_oe {
-                bindings = <&uc UC_DE_OE>;
-                sequence = <O>;
-            };
-            leader_sequence_de_ue {
-                bindings = <&uc UC_DE_UE>;
-                sequence = <U>;
-            };
-            leader_sequence_de_eszett {
-                bindings = <&uc UC_DE_SS>;
-                sequence = <S>;
-            };
-            leader_sequence_el_alpha {
-                bindings = <&uc UC_EL_ALPHA>;
-                sequence = <E A>;
-            };
-            leader_sequence_el_beta {
-                bindings = <&uc UC_EL_BETA>;
-                sequence = <E B>;
-            };
-            leader_sequence_el_gamma {
-                bindings = <&uc UC_EL_GAMMA>;
-                sequence = <E G>;
-            };
-            leader_sequence_el_delta {
-                bindings = <&uc UC_EL_DELTA>;
-                sequence = <E D>;
-            };
-            leader_sequence_el_epsilon {
-                bindings = <&uc UC_EL_EPSILON>;
-                sequence = <E E>;
-            };
-            leader_sequence_el_zeta {
-                bindings = <&uc UC_EL_ZETA>;
-                sequence = <E Z>;
-            };
-            leader_sequence_el_eta {
-                bindings = <&uc UC_EL_ETA>;
-                sequence = <E H>;
-            };
-            leader_sequence_el_theta {
-                bindings = <&uc UC_EL_THETA>;
-                sequence = <E V>;
-            };
-            leader_sequence_el_iota {
-                bindings = <&uc UC_EL_IOTA>;
-                sequence = <E I>;
-            };
-            leader_sequence_el_kappa {
-                bindings = <&uc UC_EL_KAPPA>;
-                sequence = <E K>;
-            };
-            leader_sequence_el_lambda {
-                bindings = <&uc UC_EL_LAMBDA>;
-                sequence = <E L>;
-            };
-            leader_sequence_el_mu {
-                bindings = <&uc UC_EL_MU>;
-                sequence = <E M>;
-            };
-            leader_sequence_el_nu {
-                bindings = <&uc UC_EL_NU>;
-                sequence = <E N>;
-            };
-            leader_sequence_el_xi {
-                bindings = <&uc UC_EL_XI>;
-                sequence = <E X>;
-            };
-            leader_sequence_el_omikron {
-                bindings = <&uc UC_EL_OMIKRON>;
-                sequence = <E O>;
-            };
-            leader_sequence_el_pi {
-                bindings = <&uc UC_EL_PI>;
-                sequence = <E P>;
-            };
-            leader_sequence_el_rho {
-                bindings = <&uc UC_EL_RHO>;
-                sequence = <E R>;
-            };
-            leader_sequence_el_sigma {
-                bindings = <&uc UC_EL_SIGMA>;
-                sequence = <E S>;
-            };
-            leader_sequence_el_tau {
-                bindings = <&uc UC_EL_TAU>;
-                sequence = <E T>;
-            };
-            leader_sequence_el_upsilon {
-                bindings = <&uc UC_EL_UPSILON>;
-                sequence = <E U>;
-            };
-            leader_sequence_el_phi {
-                bindings = <&uc UC_EL_PHI>;
-                sequence = <E F>;
-            };
-            leader_sequence_el_chi {
-                bindings = <&uc UC_EL_CHI>;
-                sequence = <E C>;
-            };
-            leader_sequence_el_psi {
-                bindings = <&uc UC_EL_PSI>;
-                sequence = <E Y>;
-            };
-            leader_sequence_el_omega {
-                bindings = <&uc UC_EL_OMEGA>;
-                sequence = <E W>;
-            };
-            leader_sequence_usb {
-                bindings = <&out OUT_USB>;
-                sequence = <U S B>;
-            };
-            leader_sequence_ble {
-                bindings = <&out OUT_BLE>;
-                sequence = <B L E>;
-            };
-            leader_sequence_reset {
-                bindings = <&sys_reset>;
-                sequence = <R E S E T>;
-            };
-            leader_sequence_boot {
-                bindings = <&bootloader>;
-                sequence = <B O O T>;
-            };
-        };
-    };
+    # HRM combo behaviors (if any 8-arg combos)
+    for combo in parsed['combos']:
+        if combo['hold'] and combo['side']:
+            side_positions = KEYS_L if combo['side'] == 'KEYS_L' else KEYS_R
+            hrm = {
+                'name': f"hm_combo_{combo['name']}",
+                'hold': combo['hold'],
+                'tap': combo['binding'],
+                'trigger_positions': side_positions + THUMBS,
+            }
+            output.append('')
+            output.append(expand_hrm_combo_behavior(hrm))
+            hrm_combos.append(hrm)
 
-    combos {
-        compatible = "zmk,combos";
+    output.append('    };')  # Close behaviors
 
-        combo_esc {
-            bindings = <&kp ESC>;
-            key-positions = <1 2>;
-            layers = <0 1 3>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
+    # Combos section
+    output.append('')
+    output.append('    combos {')
+    output.append('        compatible = "zmk,combos";')
 
-        combo_mouse {
-            bindings = <&smart_mouse>;
-            key-positions = <2 3>;
-            layers = <0 1 3>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
+    for combo in parsed['combos']:
+        output.append('')
+        output.append(expand_combo(combo, hrm_combos))
 
-        combo_tab {
-            bindings = <&hml LS(LALT)TAB>;
-            key-positions = <11 12>;
-            layers = <0 1 3>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
+    output.append('    };')  # Close combos
 
-        combo_cut {
-            bindings = <&kp LC(X)>;
-            key-positions = <21 23>;
-            layers = <0 1 3>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
-
-        combo_copy {
-            bindings = <&kp LC(INS)>;
-            key-positions = <21 22>;
-            layers = <0 1 3>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
-
-        combo_paste {
-            bindings = <&kp LS(INS)>;
-            key-positions = <22 23>;
-            layers = <0 1 3>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
-
-        combo_bspc {
-            bindings = <&kp BSPC>;
-            key-positions = <6 7>;
-            layers = <0 1 3>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
-
-        combo_del {
-            bindings = <&kp DEL>;
-            key-positions = <7 8>;
-            layers = <0 1 3>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
-
-        combo_lt {
-            bindings = <&kp LT>;
-            key-positions = <16 17>;
-            layers = <1>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
-
-        combo_gt {
-            bindings = <&kp GT>;
-            key-positions = <17 18>;
-            layers = <1>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
-
-        combo_lbkt {
-            bindings = <&kp LBKT>;
-            key-positions = <26 27>;
-            layers = <0 3>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
-
-        combo_rbkt {
-            bindings = <&kp RBKT>;
-            key-positions = <27 28>;
-            layers = <0 3>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
-
-        combo_lbrc {
-            bindings = <&kp LBRC>;
-            key-positions = <26 27>;
-            layers = <1>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
-
-        combo_rbrc {
-            bindings = <&kp RBRC>;
-            key-positions = <27 28>;
-            layers = <1>;
-            timeout-ms = <18>;
-            require-prior-idle-ms = <150>;
-        };
-
-        combo_at {
-            bindings = <&kp AT>;
-            key-positions = <1 11>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_hash {
-            bindings = <&kp HASH>;
-            key-positions = <2 12>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_dllr {
-            bindings = <&kp DLLR>;
-            key-positions = <3 13>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_prcnt {
-            bindings = <&kp PRCNT>;
-            key-positions = <4 14>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_grave {
-            bindings = <&kp GRAVE>;
-            key-positions = <11 21>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_bslh {
-            bindings = <&kp BSLH>;
-            key-positions = <12 22>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_equal {
-            bindings = <&kp EQUAL>;
-            key-positions = <13 23>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_tilde {
-            bindings = <&kp TILDE>;
-            key-positions = <14 24>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_caret {
-            bindings = <&kp CARET>;
-            key-positions = <5 15>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_plus {
-            bindings = <&kp PLUS>;
-            key-positions = <6 16>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_star {
-            bindings = <&kp STAR>;
-            key-positions = <7 17>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_amps {
-            bindings = <&kp AMPS>;
-            key-positions = <8 18>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_under {
-            bindings = <&kp UNDER>;
-            key-positions = <15 25>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_minus {
-            bindings = <&kp MINUS>;
-            key-positions = <16 26>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_fslh {
-            bindings = <&kp FSLH>;
-            key-positions = <17 27>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-
-        combo_pipe {
-            bindings = <&kp PIPE>;
-            key-positions = <18 28>;
-            layers = <0 1 3>;
-            timeout-ms = <30>;
-            require-prior-idle-ms = <50>;
-        };
-    };
-
-    conditional_layers {
+    # Conditional layers
+    output.append('')
+    output.append('''    conditional_layers {
         compatible = "zmk,conditional-layers";
         sys_layer {
             if-layers = <FN NUM>;
             then-layer = <SYS>;
         };
-    };
+    };''')
 
-    keymap {
+    # Keymap (layers) - using urob's Colemak-DH layout
+    output.append('')
+    output.append('''    keymap {
         compatible = "zmk,keymap";
 
         layer_Base {
@@ -777,5 +747,34 @@
 //                            ╰─────────────┴─────────────┴─────────────╯ ╰─────────────┴─────────────┴─────────────╯
             >;
         };
-    };
-};
+    };''')
+
+    output.append('};')  # Close root
+
+    return '\n'.join(output)
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Expand ZMK keymap macros to DTS format')
+    parser.add_argument('--output', '-o', help='Output file (default: stdout)')
+    parser.add_argument('--commit', '-c', help='Override commit hash in header')
+    parser.add_argument('--config-dir', '-d', default='config', help='Config directory (default: config)')
+
+    args = parser.parse_args()
+
+    config_dir = Path(args.config_dir)
+    if not config_dir.exists():
+        print(f"Error: Config directory not found: {config_dir}", file=sys.stderr)
+        sys.exit(1)
+
+    expanded = generate_expanded_keymap(config_dir, args.commit)
+
+    if args.output:
+        Path(args.output).write_text(expanded)
+        print(f"Expanded keymap written to: {args.output}", file=sys.stderr)
+    else:
+        print(expanded)
+
+
+if __name__ == '__main__':
+    main()
