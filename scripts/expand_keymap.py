@@ -2,13 +2,11 @@
 """
 ZMK Keymap Expander
 
-Expands urob's zmk-helpers macros into standard DTS format compatible with
-Nick Coutsos' Keymap Editor.
+Parses urob's zmk-helpers macro-based keymap and expands to standard DTS format
+compatible with Nick Coutsos' Keymap Editor.
 
 Usage:
-    python expand_keymap.py [--output OUTPUT] [--commit COMMIT]
-
-Outputs expanded keymap to stdout or specified file.
+    python expand_keymap.py [--config-dir DIR] [--output FILE]
 """
 
 import argparse
@@ -17,6 +15,9 @@ import subprocess
 import sys
 from pathlib import Path
 from datetime import datetime
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional, Tuple
+
 
 # Key position mappings (36-key layout)
 KEY_POSITIONS = {
@@ -30,26 +31,46 @@ KEY_POSITIONS = {
     'RH0': 33, 'RH1': 34, 'RH2': 35,
 }
 
-# Positional groups
-KEYS_L = [0, 1, 2, 3, 4, 10, 11, 12, 13, 14, 20, 21, 22, 23, 24]
-KEYS_R = [5, 6, 7, 8, 9, 15, 16, 17, 18, 19, 25, 26, 27, 28, 29]
-THUMBS = [30, 31, 32, 33, 34, 35]
+POSITION_GROUPS = {
+    'KEYS_L': [0, 1, 2, 3, 4, 10, 11, 12, 13, 14, 20, 21, 22, 23, 24],
+    'KEYS_R': [5, 6, 7, 8, 9, 15, 16, 17, 18, 19, 25, 26, 27, 28, 29],
+    'THUMBS': [30, 31, 32, 33, 34, 35],
+}
 
-# Layer name to index mapping
-LAYERS = {'DEF': 0, 'NAV': 1, 'FN': 2, 'NUM': 3, 'SYS': 4, 'MOUSE': 5}
-
-# Behavior type to compatible string and binding-cells
+# ZMK behavior types -> (compatible string, binding-cells)
 BEHAVIOR_TYPES = {
-    'hold_tap': ('zmk,behavior-hold-tap', 2),
-    'mod_morph': ('zmk,behavior-mod-morph', 0),
-    'tap_dance': ('zmk,behavior-tap-dance', 0),
-    'tri_state': ('zmk,behavior-tri-state', 0),
-    'adaptive_key': ('zmk,behavior-adaptive-key', 0),
-    'macro': ('zmk,behavior-macro', 0),
+    'HOLD_TAP': ('zmk,behavior-hold-tap', 2),
+    'MOD_MORPH': ('zmk,behavior-mod-morph', 0),
+    'TAP_DANCE': ('zmk,behavior-tap-dance', 0),
+    'TRI_STATE': ('zmk,behavior-tri-state', 0),
+    'ADAPTIVE_KEY': ('zmk,behavior-adaptive-key', 0),
+    'MACRO': ('zmk,behavior-macro', 0),
 }
 
 
-def get_git_commit():
+@dataclass
+class MacroDef:
+    """Represents a #define macro."""
+    name: str
+    params: Optional[List[str]] = None  # None = simple macro, list = parameterized
+    body: str = ""
+    is_multiline: bool = False
+
+
+@dataclass
+class ParseState:
+    """Parser state accumulator."""
+    macros: Dict[str, MacroDef] = field(default_factory=dict)
+    behaviors: List[str] = field(default_factory=list)
+    combos: List[str] = field(default_factory=list)
+    layers: List[str] = field(default_factory=list)
+    conditional_layers: List[str] = field(default_factory=list)
+    leader_sequences: List[str] = field(default_factory=list)
+    node_overrides: List[str] = field(default_factory=list)  # &node { } outside root
+    raw_passthrough: List[str] = field(default_factory=list)  # DTS that passes through
+
+
+def get_git_commit() -> str:
     """Get current git commit hash."""
     try:
         result = subprocess.run(
@@ -61,232 +82,505 @@ def get_git_commit():
         return 'unknown'
 
 
-def resolve_key_positions(pos_str):
-    """Convert position names (LT1 LT2) to numbers."""
-    positions = []
-    for token in pos_str.split():
-        token = token.strip()
-        if token in KEY_POSITIONS:
-            positions.append(KEY_POSITIONS[token])
-        elif token == 'KEYS_L':
-            positions.extend(KEYS_L)
-        elif token == 'KEYS_R':
-            positions.extend(KEYS_R)
-        elif token == 'THUMBS':
-            positions.extend(THUMBS)
-        elif token.isdigit():
-            positions.append(int(token))
-    return positions
+def resolve_positions(text: str, macros: Dict[str, MacroDef]) -> str:
+    """Replace position names and groups with numbers."""
+    result = text
+
+    # Expand position groups first
+    for group_name, positions in POSITION_GROUPS.items():
+        result = re.sub(
+            rf'\b{group_name}\b',
+            ' '.join(map(str, positions)),
+            result
+        )
+
+    # Then individual positions
+    for pos_name, pos_num in KEY_POSITIONS.items():
+        result = re.sub(rf'\b{pos_name}\b', str(pos_num), result)
+
+    return result
 
 
-def resolve_layers(layer_str):
-    """Convert layer names to indices."""
-    layers = []
-    for token in layer_str.split():
-        token = token.strip()
-        if token in LAYERS:
-            layers.append(LAYERS[token])
-        elif token.isdigit():
-            layers.append(int(token))
-    return layers
+def strip_comments(text: str) -> str:
+    """Remove C-style comments from text."""
+    # Remove // comments (but preserve the content before them)
+    result = re.sub(r'\s*//[^\n]*', '', text)
+    # Remove /* */ comments
+    result = re.sub(r'/\*.*?\*/', '', result, flags=re.DOTALL)
+    return result
 
 
-def parse_combo(line):
-    """Parse ZMK_COMBO macro call."""
+def normalize_whitespace(text: str) -> str:
+    """Normalize excessive whitespace from macro expansion."""
+    # Replace multiple spaces with single space
+    result = re.sub(r'  +', ' ', text)
+    # Fix double semicolons
+    result = re.sub(r';\s*;', ';', result)
+    return result.strip()
+
+
+def expand_simple_macro(text: str, macros: Dict[str, MacroDef], strip_macro_comments: bool = True) -> str:
+    """Expand simple (non-parameterized) macros in text."""
+    result = text
+    changed = True
+    iterations = 0
+
+    while changed and iterations < 50:  # Prevent infinite loops
+        changed = False
+        iterations += 1
+        for name, macro in macros.items():
+            if macro.params is None:  # Simple macro
+                pattern = rf'\b{re.escape(name)}\b'
+                # Strip comments from macro body before substitution
+                body = macro.body
+                if strip_macro_comments:
+                    body = re.sub(r'\s*//.*$', '', body)
+                new_result = re.sub(pattern, body, result)
+                if new_result != result:
+                    result = new_result
+                    changed = True
+
+    return result
+
+
+def parse_macro_definition(line: str, lines_iter) -> Optional[MacroDef]:
+    """Parse a #define directive, handling multi-line macros."""
+    match = re.match(r'#define\s+(\w+)(?:\(([^)]*)\))?\s*(.*)', line)
+    if not match:
+        return None
+
+    name = match.group(1)
+    params_str = match.group(2)
+    body = match.group(3).strip()
+
+    params = None
+    if params_str is not None:
+        params = [p.strip() for p in params_str.split(',') if p.strip()]
+
+    # Handle multi-line macros (ending with \)
+    is_multiline = body.endswith('\\')
+    while body.endswith('\\'):
+        body = body[:-1].strip()
+        try:
+            next_line = next(lines_iter).rstrip()
+            body += ' ' + next_line.strip()
+        except StopIteration:
+            break
+
+    if body.endswith('\\'):
+        body = body[:-1].strip()
+
+    return MacroDef(name=name, params=params, body=body, is_multiline=is_multiline)
+
+
+def expand_parameterized_macro(name: str, args: List[str], macro: MacroDef) -> str:
+    """Expand a parameterized macro with given arguments."""
+    if macro.params is None or len(args) != len(macro.params):
+        return f"/* ERROR: macro {name} param mismatch */"
+
+    result = macro.body
+    for param, arg in zip(macro.params, args):
+        # Handle token pasting (##)
+        result = re.sub(rf'{param}\s*##\s*(\w+)', arg + r'\1', result)
+        result = re.sub(rf'(\w+)\s*##\s*{param}', r'\1' + arg, result)
+        # Regular substitution
+        result = re.sub(rf'\b{param}\b', arg, result)
+
+    return result
+
+
+def parse_zmk_behavior(text: str, behavior_type: str, macros: Dict[str, MacroDef]) -> Optional[str]:
+    """Parse and expand a ZMK_* behavior macro to DTS."""
+    # Match ZMK_BEHAVIOR_TYPE(name, props...)
+    # Props can span multiple "lines" in the joined text
+    pattern = rf'ZMK_{behavior_type}\s*\(\s*(\w+)\s*,\s*(.+?)\s*\)\s*$'
+    match = re.match(pattern, text, re.DOTALL)
+    if not match:
+        # Try without trailing )
+        pattern = rf'ZMK_{behavior_type}\s*\(\s*(\w+)\s*,\s*(.+)'
+        match = re.match(pattern, text, re.DOTALL)
+        if not match:
+            return None
+
+    name = match.group(1)
+    props_raw = match.group(2).rstrip(')')
+
+    compatible, binding_cells = BEHAVIOR_TYPES[behavior_type]
+
+    # Expand macros first, then parse properties
+    props_expanded = expand_simple_macro(props_raw, macros)
+    props_expanded = resolve_positions(props_expanded, macros)
+    props_expanded = strip_comments(props_expanded)
+    props_expanded = normalize_whitespace(props_expanded)
+
+    # Parse properties (semicolon-separated)
+    props = []
+    for prop in re.split(r';\s*', props_expanded):
+        prop = prop.strip()
+        if prop:
+            props.append(prop)
+
+    # Build DTS node
+    lines = [
+        f'        {name}: {name} {{',
+        f'            compatible = "{compatible}";',
+        f'            #binding-cells = <{binding_cells}>;',
+    ]
+
+    for prop in props:
+        # Skip empty props
+        if not prop:
+            continue
+        lines.append(f'            {prop};')
+
+    lines.append('        };')
+
+    return '\n'.join(lines)
+
+
+def parse_zmk_combo(text: str, macros: Dict[str, MacroDef]) -> Optional[str]:
+    """Parse ZMK_COMBO macro to DTS."""
     # ZMK_COMBO(name, binding, positions, layers, timeout, idle[, hold, side])
-    match = re.match(r'ZMK_COMBO\s*\(\s*(\w+)\s*,\s*(.+?)\s*,\s*(.+?)\s*,\s*(.+?)\s*,\s*(\w+)\s*,\s*(\w+)(?:\s*,\s*(\w+)\s*,\s*(\w+))?\s*\)', line)
+    pattern = r'ZMK_COMBO\s*\(\s*(\w+)\s*,\s*(.+?)\s*,\s*(.+?)\s*,\s*(.+?)\s*,\s*(\w+)\s*,\s*(\w+)(?:\s*,\s*(\w+(?:\([^)]*\))?)\s*,\s*(\w+))?\s*\)'
+    match = re.match(pattern, text)
+    if not match:
+        return None
+
+    name = match.group(1)
+    binding = expand_simple_macro(match.group(2).strip(), macros)
+    positions = resolve_positions(match.group(3), macros)
+    layers_str = match.group(4)
+    timeout = expand_simple_macro(match.group(5), macros)
+    idle = expand_simple_macro(match.group(6), macros)
+    hold = match.group(7)  # Optional
+    side = match.group(8)  # Optional
+
+    # Resolve layer names to numbers
+    layers = []
+    for token in layers_str.split():
+        token = token.strip()
+        if token in macros and macros[token].params is None:
+            layers.append(macros[token].body)
+        else:
+            layers.append(token)
+
+    # Convert positions to list of numbers
+    pos_nums = []
+    for token in positions.split():
+        token = token.strip()
+        if token.isdigit():
+            pos_nums.append(token)
+
+    lines = [
+        f'        combo_{name} {{',
+        f'            bindings = <{binding}>;',
+        f'            key-positions = <{" ".join(pos_nums)}>;',
+        f'            layers = <{" ".join(layers)}>;',
+        f'            timeout-ms = <{timeout}>;',
+        f'            require-prior-idle-ms = <{idle}>;',
+        '        };',
+    ]
+
+    return '\n'.join(lines)
+
+
+def parse_zmk_layer(text: str, macros: Dict[str, MacroDef]) -> Optional[str]:
+    """Parse ZMK_LAYER or ZMK_BASE_LAYER macro to DTS."""
+    # ZMK_BASE_LAYER(name, bindings with commas between rows)
+    pattern = r'ZMK_(?:BASE_)?LAYER\s*\(\s*(\w+)\s*,\s*(.+?)\s*\)\s*$'
+    match = re.match(pattern, text, re.DOTALL)
+    if not match:
+        return None
+
+    name = match.group(1)
+    bindings_raw = match.group(2)
+
+    # Expand macros in bindings
+    bindings = expand_simple_macro(bindings_raw, macros)
+    bindings = resolve_positions(bindings, macros)
+
+    # Process line by line
+    lines_out = []
+    for line in bindings.split('\n'):
+        original_line = line
+        line = line.rstrip(',').strip()
+
+        # Keep visual comment lines (row separators)
+        if line.startswith('//╭') or line.startswith('//├') or line.startswith('//╰'):
+            lines_out.append(line)
+        elif line.startswith('//'):
+            # Skip inline comments
+            continue
+        elif line:
+            # Strip inline comments from binding lines
+            line = re.sub(r'\s*//.*$', '', line)
+            # Remove all commas (including mid-line between halves)
+            line = line.replace(',', '')
+            if line.strip():
+                lines_out.append('    ' + line.strip())
+
+    bindings_formatted = '\n'.join(lines_out)
+
+    result = f'''        layer_{name} {{
+            display-name = "{name}";
+            bindings = <
+{bindings_formatted}
+            >;
+        }};'''
+
+    return result
+
+
+def parse_zmk_conditional_layer(text: str, macros: Dict[str, MacroDef]) -> Optional[str]:
+    """Parse ZMK_CONDITIONAL_LAYER macro to DTS."""
+    pattern = r'ZMK_CONDITIONAL_LAYER\s*\(\s*(\w+)\s*,\s*(\w+)\s+(\w+)\s*,\s*(\w+)\s*\)'
+    match = re.match(pattern, text)
+    if not match:
+        return None
+
+    name = match.group(1)
+    if_layer1 = expand_simple_macro(match.group(2), macros)
+    if_layer2 = expand_simple_macro(match.group(3), macros)
+    then_layer = expand_simple_macro(match.group(4), macros)
+
+    return f'''        {name}_layer {{
+            if-layers = <{if_layer1} {if_layer2}>;
+            then-layer = <{then_layer}>;
+        }};'''
+
+
+def parse_zmk_leader_sequence(text: str, macros: Dict[str, MacroDef]) -> Optional[str]:
+    """Parse ZMK_LEADER_SEQUENCE macro to DTS."""
+    pattern = r'ZMK_LEADER_SEQUENCE\s*\(\s*(\w+)\s*,\s*(.+?)\s*,\s*(.+?)\s*\)'
+    match = re.match(pattern, text)
     if not match:
         return None
 
     name = match.group(1)
     binding = match.group(2).strip()
-    positions = resolve_key_positions(match.group(3))
-    layers = resolve_layers(match.group(4))
-    timeout = match.group(5)
-    idle = match.group(6)
-    hold = match.group(7)  # Optional HRM hold key
-    side = match.group(8)  # Optional HRM side
+    sequence = match.group(3).strip()
 
-    return {
-        'name': name,
-        'binding': binding,
-        'positions': positions,
-        'layers': layers,
-        'timeout': timeout,
-        'idle': idle,
-        'hold': hold,
-        'side': side,
-    }
+    return f'''            leader_sequence_{name} {{
+                bindings = <{binding}>;
+                sequence = <{sequence}>;
+            }};'''
 
 
-def expand_combo(combo, hrm_combos):
-    """Expand combo to DTS format."""
+def read_file_content(filepath: Path, config_dir: Path) -> str:
+    """Read file content, trying relative to config_dir."""
+    if filepath.is_absolute() and filepath.exists():
+        return filepath.read_text()
+
+    # Try relative to config_dir
+    full_path = config_dir / filepath
+    if full_path.exists():
+        return full_path.read_text()
+
+    return ""
+
+
+def process_includes(content: str, config_dir: Path, processed: set = None) -> str:
+    """Process #include directives, inlining local files."""
+    if processed is None:
+        processed = set()
+
     lines = []
-    name = combo['name']
-
-    # If combo has HRM (8-arg version), generate the hm_combo behavior first
-    if combo['hold'] and combo['side']:
-        hrm_name = f"hm_combo_{name}"
-        side_positions = KEYS_L if combo['side'] == 'KEYS_L' else KEYS_R
-        trigger_positions = side_positions + THUMBS
-
-        hrm_combos.append({
-            'name': hrm_name,
-            'hold': combo['hold'],
-            'tap': combo['binding'],
-            'trigger_positions': trigger_positions,
-        })
-        binding = f"&{hrm_name} {combo['hold']} 0"
-    else:
-        binding = combo['binding']
-
-    lines.append(f"        combo_{name} {{")
-    lines.append(f"            bindings = <{binding}>;")
-    lines.append(f"            key-positions = <{' '.join(map(str, combo['positions']))}>;")
-    lines.append(f"            layers = <{' '.join(map(str, combo['layers']))}>;")
-
-    # Resolve timeout/idle constants
-    timeout = combo['timeout']
-    if timeout == 'COMBO_TERM_FAST':
-        timeout = '18'
-    elif timeout == 'COMBO_TERM_SLOW':
-        timeout = '30'
-
-    idle = combo['idle']
-    if idle == 'COMBO_IDLE_FAST':
-        idle = '150'
-    elif idle == 'COMBO_IDLE_SLOW':
-        idle = '50'
-
-    lines.append(f"            timeout-ms = <{timeout}>;")
-    lines.append(f"            require-prior-idle-ms = <{idle}>;")
-    lines.append("        };")
-
-    return '\n'.join(lines)
-
-
-def expand_hrm_combo_behavior(hrm):
-    """Expand HRM combo behavior to DTS format."""
-    lines = []
-    lines.append(f"        {hrm['name']}: {hrm['name']} {{")
-    lines.append('            compatible = "zmk,behavior-hold-tap";')
-    lines.append('            #binding-cells = <2>;')
-    lines.append(f"            bindings = <&kp>, <{hrm['tap']}>;")
-    lines.append('            flavor = "balanced";')
-    lines.append('            tapping-term-ms = <280>;')
-    lines.append('            quick-tap-ms = <175>;')
-    lines.append('            require-prior-idle-ms = <150>;')
-    lines.append('            hold-trigger-on-release;')
-    lines.append(f"            hold-trigger-key-positions = <{' '.join(map(str, hrm['trigger_positions']))}>;")
-    lines.append("        };")
-    return '\n'.join(lines)
-
-
-def parse_leader_sequence(line):
-    """Parse ZMK_LEADER_SEQUENCE macro call."""
-    match = re.match(r'ZMK_LEADER_SEQUENCE\s*\(\s*(\w+)\s*,\s*(.+?)\s*,\s*(.+?)\s*\)', line)
-    if not match:
-        return None
-
-    return {
-        'name': match.group(1),
-        'binding': match.group(2).strip(),
-        'sequence': match.group(3).strip(),
-    }
-
-
-def expand_leader_sequences(sequences):
-    """Expand leader sequences into leader behavior node."""
-    lines = []
-    lines.append("        leader: leader {")
-    lines.append('            compatible = "zmk,behavior-leader-key";')
-    lines.append('            #binding-cells = <0>;')
-    lines.append('            ignore-keys = <LSHFT RSHFT>;')
-
-    for seq in sequences:
-        lines.append(f"            leader_sequence_{seq['name']} {{")
-        lines.append(f"                bindings = <{seq['binding']}>;")
-        lines.append(f"                sequence = <{seq['sequence']}>;")
-        lines.append("            };")
-
-    lines.append("        };")
-    return '\n'.join(lines)
-
-
-def parse_behavior(line, behavior_type):
-    """Parse ZMK_HOLD_TAP, ZMK_MOD_MORPH, etc."""
-    pattern = rf'ZMK_({behavior_type.upper()})\s*\(\s*(\w+)\s*,(.+)\)'
-    match = re.match(pattern, line, re.IGNORECASE)
-    if not match:
-        # Try alternate pattern for multi-line or complex cases
-        pattern = rf'ZMK_({behavior_type.upper()})\s*\(\s*(\w+)\s*,'
-        match = re.match(pattern, line, re.IGNORECASE)
+    for line in content.split('\n'):
+        # Local include: #include "file.dtsi"
+        match = re.match(r'#include\s+"([^"]+)"', line)
         if match:
-            return {'name': match.group(2), 'type': behavior_type, 'props': 'INCOMPLETE'}
-        return None
+            filename = match.group(1)
+            if filename not in processed:
+                processed.add(filename)
+                included_content = read_file_content(Path(filename), config_dir)
+                if included_content:
+                    # Recursively process includes
+                    included_content = process_includes(included_content, config_dir, processed)
+                    lines.append(f'/* === Included from {filename} === */')
+                    lines.append(included_content)
+                    lines.append(f'/* === End {filename} === */')
+                else:
+                    lines.append(f'/* Include not found: {filename} */')
+            continue
 
-    return {
-        'name': match.group(2),
-        'type': behavior_type,
-        'props': match.group(3).strip().rstrip(')'),
-    }
+        # System include: keep as-is but we'll handle specially
+        if re.match(r'#include\s+<', line):
+            lines.append(line)
+            continue
+
+        lines.append(line)
+
+    return '\n'.join(lines)
 
 
-def parse_keymap_files(config_dir):
-    """Parse base.keymap and included files."""
-    config_path = Path(config_dir)
+def collect_multiline_construct(start_line: str, lines_iter) -> str:
+    """Collect a construct that may span multiple lines (parentheses/braces balanced)."""
+    result = start_line
 
-    base_keymap = config_path / 'base.keymap'
-    combos_file = config_path / 'combos.dtsi'
-    leader_file = config_path / 'leader.dtsi'
-    mouse_file = config_path / 'mouse.dtsi'
+    # Count parens/braces
+    open_parens = result.count('(') - result.count(')')
+    open_braces = result.count('{') - result.count('}')
 
-    result = {
-        'combos': [],
-        'leader_sequences': [],
-        'behaviors': [],
-        'layers': [],
-        'mouse_config': '',
-    }
-
-    # Parse combos
-    if combos_file.exists():
-        content = combos_file.read_text()
-        for line in content.split('\n'):
-            line = line.strip()
-            if line.startswith('ZMK_COMBO'):
-                combo = parse_combo(line)
-                if combo:
-                    result['combos'].append(combo)
-
-    # Parse leader sequences
-    if leader_file.exists():
-        content = leader_file.read_text()
-        for line in content.split('\n'):
-            line = line.strip()
-            if line.startswith('ZMK_LEADER_SEQUENCE'):
-                seq = parse_leader_sequence(line)
-                if seq:
-                    result['leader_sequences'].append(seq)
-
-    # Parse mouse config (mostly passthrough)
-    if mouse_file.exists():
-        result['mouse_config'] = mouse_file.read_text()
+    while (open_parens > 0 or open_braces > 0):
+        try:
+            next_line = next(lines_iter)
+            result += '\n' + next_line
+            open_parens += next_line.count('(') - next_line.count(')')
+            open_braces += next_line.count('{') - next_line.count('}')
+        except StopIteration:
+            break
 
     return result
 
 
-def generate_header(commit_hash):
-    """Generate file header with metadata."""
+def parse_content(content: str, config_dir: Path) -> ParseState:
+    """Parse the full content and extract all components."""
+    state = ParseState()
+
+    # Pre-seed macros that come from #ifdef blocks (assume wireless)
+    state.macros['_BT_SEL_KEYS_'] = MacroDef(
+        name='_BT_SEL_KEYS_',
+        body='&bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR'
+    )
+
+    # First pass: collect all macro definitions
+    lines = content.split('\n')
+    lines_iter = iter(enumerate(lines))
+
+    remaining_lines = []
+
+    for idx, line in lines_iter:
+        stripped = line.strip()
+
+        # Skip comments
+        if stripped.startswith('//'):
+            remaining_lines.append(line)
+            continue
+
+        # Parse #define
+        if stripped.startswith('#define'):
+            # Need to handle multi-line defines
+            full_line = line
+            while full_line.rstrip().endswith('\\'):
+                try:
+                    _, next_line = next(lines_iter)
+                    full_line += '\n' + next_line
+                except StopIteration:
+                    break
+
+            macro = parse_macro_definition(full_line.replace('\\\n', ' '), iter([]))
+            if macro:
+                state.macros[macro.name] = macro
+            continue
+
+        remaining_lines.append(line)
+
+    # Second pass: process the non-macro content
+    content = '\n'.join(remaining_lines)
+    lines = content.split('\n')
+    lines_iter = iter(lines)
+
+    for line in lines_iter:
+        stripped = line.strip()
+
+        # Skip empty lines and comments
+        if not stripped or stripped.startswith('//') or stripped.startswith('/*'):
+            continue
+
+        # Skip system includes (we'll add our own header)
+        if stripped.startswith('#include <'):
+            continue
+
+        # Skip #ifdef/#else/#endif (assume wireless config)
+        if stripped.startswith('#if') or stripped.startswith('#else') or stripped.startswith('#endif'):
+            continue
+
+        # Node override outside root: &name { ... }
+        if stripped.startswith('&') and '{' in stripped:
+            full = collect_multiline_construct(line, lines_iter)
+            # Resolve positions and expand macros
+            full = resolve_positions(full, state.macros)
+            full = expand_simple_macro(full, state.macros)
+            full = strip_comments(full)
+            # Normalize whitespace but preserve structure
+            full = re.sub(r'  +', ' ', full)
+            full = re.sub(r';\s*;', ';', full)
+            state.node_overrides.append(full)
+            continue
+
+        # ZMK behavior macros
+        for btype in BEHAVIOR_TYPES:
+            if f'ZMK_{btype}' in stripped:
+                full = collect_multiline_construct(line, lines_iter)
+                expanded = parse_zmk_behavior(full.strip(), btype, state.macros)
+                if expanded:
+                    state.behaviors.append(expanded)
+                break
+        else:
+            # ZMK_COMBO
+            if 'ZMK_COMBO' in stripped:
+                full = collect_multiline_construct(line, lines_iter)
+                expanded = parse_zmk_combo(full.strip(), state.macros)
+                if expanded:
+                    state.combos.append(expanded)
+                continue
+
+            # ZMK_LAYER / ZMK_BASE_LAYER
+            if 'ZMK_LAYER' in stripped or 'ZMK_BASE_LAYER' in stripped:
+                full = collect_multiline_construct(line, lines_iter)
+                expanded = parse_zmk_layer(full.strip(), state.macros)
+                if expanded:
+                    state.layers.append(expanded)
+                continue
+
+            # ZMK_CONDITIONAL_LAYER
+            if 'ZMK_CONDITIONAL_LAYER' in stripped:
+                expanded = parse_zmk_conditional_layer(stripped, state.macros)
+                if expanded:
+                    state.conditional_layers.append(expanded)
+                continue
+
+            # ZMK_LEADER_SEQUENCE
+            if 'ZMK_LEADER_SEQUENCE' in stripped:
+                expanded = parse_zmk_leader_sequence(stripped, state.macros)
+                if expanded:
+                    state.leader_sequences.append(expanded)
+                continue
+
+            # Local macro calls that generate behaviors (MAKE_HRM, SIMPLE_MORPH, etc.)
+            for macro_name, macro in state.macros.items():
+                if macro.params and macro_name in stripped:
+                    # Try to parse as macro call
+                    pattern = rf'{macro_name}\s*\(([^)]+)\)'
+                    match = re.search(pattern, stripped)
+                    if match:
+                        args = [a.strip() for a in match.group(1).split(',')]
+                        expanded_call = expand_parameterized_macro(macro_name, args, macro)
+                        # The expanded call might be another ZMK_* macro
+                        for btype in BEHAVIOR_TYPES:
+                            if f'ZMK_{btype}' in expanded_call:
+                                behavior = parse_zmk_behavior(expanded_call, btype, state.macros)
+                                if behavior:
+                                    state.behaviors.append(behavior)
+                                break
+
+    return state
+
+
+def generate_output(state: ParseState, commit_hash: str) -> str:
+    """Generate the final expanded keymap file."""
     timestamp = datetime.now().strftime('%Y-%m-%d')
-    return f'''/*
+
+    lines = []
+
+    # Header
+    lines.append(f'''/*
  * ZMK Keymap - Expanded from urob/zmk-config
  *
  * Generated: {timestamp}
  * Source commit: {commit_hash}
  *
  * This file is auto-generated by expand_keymap.py for Keymap Editor compatibility.
- * Do not edit this file directly - edit the source and re-expand.
  */
 
 #include <behaviors.dtsi>
@@ -295,485 +589,124 @@ def generate_header(commit_hash):
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
-#include <dt-bindings/zmk/pointing.h>
-#include <input/processors.dtsi>
-#include <zephyr/dt-bindings/input/input-event-codes.h>
 
-#define DEF 0
-#define NAV 1
-#define FN 2
-#define NUM 3
-#define SYS 4
-#define MOUSE 5
-
-#define KEYS_L 0 1 2 3 4 10 11 12 13 14 20 21 22 23 24
-#define KEYS_R 5 6 7 8 9 15 16 17 18 19 25 26 27 28 29
-#define THUMBS 30 31 32 33 34 35
-
-#define QUICK_TAP_MS 175
-'''
-
-
-def generate_expanded_keymap(config_dir, commit_hash=None):
-    """Generate complete expanded keymap."""
-    if commit_hash is None:
-        commit_hash = get_git_commit()
-
-    parsed = parse_keymap_files(config_dir)
-
-    output = []
-    output.append(generate_header(commit_hash))
-
-    # Mouse settings
-    output.append('''
-/* Mouse settings */
+/* Mouse settings - must be before pointing.h */
 #define ZMK_POINTING_DEFAULT_MOVE_VAL 600
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 20
 
-&mmv {
-    acceleration-exponent = <1>;
-    time-to-max-speed-ms = <500>;
-    delay-ms = <0>;
-};
-
-&msc {
-    acceleration-exponent = <0>;
-    time-to-max-speed-ms = <300>;
-    delay-ms = <0>;
-};
-
-#define U_MS_U &mmv MOVE_UP
-#define U_MS_D &mmv MOVE_DOWN
-#define U_MS_L &mmv MOVE_LEFT
-#define U_MS_R &mmv MOVE_RIGHT
-#define U_WH_U &msc SCRL_UP
-#define U_WH_D &msc SCRL_DOWN
-#define U_WH_L &msc SCRL_LEFT
-#define U_WH_R &msc SCRL_RIGHT
+#include <dt-bindings/zmk/pointing.h>
+#include <input/processors.dtsi>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
 ''')
 
-    # Start root node
-    output.append('/ {')
+    # Layer defines
+    lines.append('#define DEF 0')
+    lines.append('#define NAV 1')
+    lines.append('#define FN 2')
+    lines.append('#define NUM 3')
+    lines.append('#define SYS 4')
+    lines.append('#define MOUSE 5')
+    lines.append('')
+    lines.append('#define KEYS_L 0 1 2 3 4 10 11 12 13 14 20 21 22 23 24')
+    lines.append('#define KEYS_R 5 6 7 8 9 15 16 17 18 19 25 26 27 28 29')
+    lines.append('#define THUMBS 30 31 32 33 34 35')
+    lines.append('')
+    lines.append('#define QUICK_TAP_MS 175')
+    lines.append('')
 
-    # Behaviors section
-    output.append('    behaviors {')
+    # Node overrides (outside root)
+    for override in state.node_overrides:
+        lines.append(override)
+        lines.append('')
 
-    # Sticky key config
-    output.append('''        sk {
-            release-after-ms = <900>;
-            quick-release;
-        };
+    # Root node
+    lines.append('/ {')
 
-        sl {
-            ignore-modifiers;
-        };
+    # Behaviors
+    lines.append('    behaviors {')
+    for behavior in state.behaviors:
+        lines.append(behavior)
+        lines.append('')
 
-        lt {
-            flavor = "balanced";
-            tapping-term-ms = <200>;
-            quick-tap-ms = <QUICK_TAP_MS>;
-        };
+    # Leader key (if we have sequences)
+    if state.leader_sequences:
+        lines.append('        leader: leader {')
+        lines.append('            compatible = "zmk,behavior-leader-key";')
+        lines.append('            #binding-cells = <0>;')
+        lines.append('            ignore-keys = <LSHFT RSHFT>;')
+        for seq in state.leader_sequences:
+            lines.append(seq)
+        lines.append('        };')
+        lines.append('')
 
-        mt {
-            flavor = "tap-preferred";
-            tapping-term-ms = <220>;
-            quick-tap-ms = <220>;
-            hold-trigger-key-positions = <0>;
-        };
-''')
+    lines.append('    };')  # Close behaviors
+    lines.append('')
 
-    # Homerow mods
-    output.append('''        /* Homerow mods */
-        hml: hml {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            bindings = <&kp>, <&kp>;
-            flavor = "balanced";
-            tapping-term-ms = <280>;
-            quick-tap-ms = <QUICK_TAP_MS>;
-            require-prior-idle-ms = <150>;
-            hold-trigger-on-release;
-            hold-trigger-key-positions = <KEYS_R THUMBS>;
-        };
-
-        hmr: hmr {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            bindings = <&kp>, <&kp>;
-            flavor = "balanced";
-            tapping-term-ms = <280>;
-            quick-tap-ms = <QUICK_TAP_MS>;
-            require-prior-idle-ms = <150>;
-            hold-trigger-on-release;
-            hold-trigger-key-positions = <KEYS_L THUMBS>;
-        };
-''')
-
-    # HRM combo behaviors (generated from 8-arg combos)
-    hrm_combos = []
-
-    # Nav cluster behaviors
-    output.append('''        /* Nav cluster */
-        masked_home: masked_home {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp HOME>, <&kp HOME>;
-            mods = <(MOD_LCTL)>;
-        };
-
-        masked_end: masked_end {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp END>, <&kp END>;
-            mods = <(MOD_LCTL)>;
-        };
-
-        mt_home: mt_home {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            bindings = <&masked_home>, <&kp>;
-            flavor = "tap-preferred";
-            tapping-term-ms = <220>;
-            quick-tap-ms = <220>;
-            hold-trigger-key-positions = <0>;
-        };
-
-        mt_end: mt_end {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            bindings = <&masked_end>, <&kp>;
-            flavor = "tap-preferred";
-            tapping-term-ms = <220>;
-            quick-tap-ms = <220>;
-            hold-trigger-key-positions = <0>;
-        };
-''')
-
-    # Magic shift and smart behaviors
-    output.append('''        /* Magic shift & smart behaviors */
-        magic_shift: magic_shift {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            bindings = <&kp>, <&magic_shift_tap>;
-            flavor = "balanced";
-            tapping-term-ms = <200>;
-            quick-tap-ms = <QUICK_TAP_MS>;
-        };
-
-        magic_shift_tap: magic_shift_tap {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&shift_repeat>, <&caps_word>;
-            mods = <(MOD_LSFT)>;
-        };
-
-        shift_repeat: shift_repeat {
-            compatible = "zmk,behavior-adaptive-key";
-            #binding-cells = <0>;
-            bindings = <&sk LSHFT>;
-            repeat {
-                trigger-keys = <A B C D E F G H I J K L M N O P Q R S T U V W X Y Z>;
-                bindings = <&key_repeat>;
-                max-prior-idle-ms = <1200>;
-                strict-modifiers;
-            };
-        };
-
-        smart_num: smart_num {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            bindings = <&mo>, <&num_dance>;
-            flavor = "balanced";
-            tapping-term-ms = <200>;
-            quick-tap-ms = <QUICK_TAP_MS>;
-        };
-
-        num_dance: num_dance {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            bindings = <&num_word NUM>, <&sl NUM>;
-            tapping-term-ms = <200>;
-        };
-
-        smart_mouse: smart_mouse {
-            compatible = "zmk,behavior-tri-state";
-            #binding-cells = <0>;
-            bindings = <&tog MOUSE>, <&none>, <&tog MOUSE>;
-            ignored-key-positions = <LT1 LT2 LH0 LH1 RT1 RT2 RT3 RM0 RM1 RM2 RM3 RM4 RB1 RB2 RB3 RH0 RH1>;
-            ignored-layers = <MOUSE NAV FN>;
-        };
-''')
-
-    # Morphs and other behaviors
-    output.append('''        /* Morphs */
-        comma_morph: comma_morph {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp COMMA>, <&comma_inner_morph>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
-        comma_inner_morph: comma_inner_morph {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp SEMICOLON>, <&kp LESS_THAN>;
-            mods = <(MOD_LCTL|MOD_RCTL)>;
-        };
-
-        dot_morph: dot_morph {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp DOT>, <&dot_inner_morph>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
-        dot_inner_morph: dot_inner_morph {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp COLON>, <&kp GREATER_THAN>;
-            mods = <(MOD_LCTL|MOD_RCTL)>;
-        };
-
-        qexcl: qexcl {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp QMARK>, <&kp EXCL>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
-        lpar_lt: lpar_lt {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp LPAR>, <&kp LT>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
-        rpar_gt: rpar_gt {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp RPAR>, <&kp GT>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
-        lt_spc: lt_spc {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            bindings = <&mo>, <&spc_morph>;
-            flavor = "balanced";
-            tapping-term-ms = <200>;
-            quick-tap-ms = <QUICK_TAP_MS>;
-        };
-
-        spc_morph: spc_morph {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp SPACE>, <&dot_spc>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-        };
-
-        bs_del: bs_del {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp BSPC>, <&kp DEL>;
-            mods = <(MOD_LSFT|MOD_RSFT)>;
-            keep-mods = <MOD_RSFT>;
-        };
-
-        copy_cut: copy_cut {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            bindings = <&kp LC(INS)>, <&kp LC(X)>;
-            tapping-term-ms = <200>;
-        };
-
-        swapper: swapper {
-            compatible = "zmk,behavior-tri-state";
-            #binding-cells = <0>;
-            bindings = <&kt LALT>, <&kp TAB>, <&kt LALT>;
-            ignored-key-positions = <LT2 RT2 RM1 RM2 RM3>;
-        };
-''')
-
-    # Macros
-    output.append('''        /* Macros */
-        dot_spc: dot_spc {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            wait-ms = <0>;
-            tap-ms = <5>;
-            bindings = <&kp DOT &kp SPACE &sk LSHFT>;
-        };
-
-        leader_sft: leader_sft {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&sk LSHFT &leader>;
-        };
-''')
-
-    # Leader key with sequences
-    if parsed['leader_sequences']:
-        output.append('')
-        output.append(expand_leader_sequences(parsed['leader_sequences']))
-
-    # HRM combo behaviors (if any 8-arg combos)
-    for combo in parsed['combos']:
-        if combo['hold'] and combo['side']:
-            side_positions = KEYS_L if combo['side'] == 'KEYS_L' else KEYS_R
-            hrm = {
-                'name': f"hm_combo_{combo['name']}",
-                'hold': combo['hold'],
-                'tap': combo['binding'],
-                'trigger_positions': side_positions + THUMBS,
-            }
-            output.append('')
-            output.append(expand_hrm_combo_behavior(hrm))
-            hrm_combos.append(hrm)
-
-    output.append('    };')  # Close behaviors
-
-    # Combos section
-    output.append('')
-    output.append('    combos {')
-    output.append('        compatible = "zmk,combos";')
-
-    for combo in parsed['combos']:
-        output.append('')
-        output.append(expand_combo(combo, hrm_combos))
-
-    output.append('    };')  # Close combos
+    # Combos
+    if state.combos:
+        lines.append('    combos {')
+        lines.append('        compatible = "zmk,combos";')
+        lines.append('')
+        for combo in state.combos:
+            lines.append(combo)
+            lines.append('')
+        lines.append('    };')
+        lines.append('')
 
     # Conditional layers
-    output.append('')
-    output.append('''    conditional_layers {
-        compatible = "zmk,conditional-layers";
-        sys_layer {
-            if-layers = <FN NUM>;
-            then-layer = <SYS>;
-        };
-    };''')
+    if state.conditional_layers:
+        lines.append('    conditional_layers {')
+        lines.append('        compatible = "zmk,conditional-layers";')
+        for cl in state.conditional_layers:
+            lines.append(cl)
+        lines.append('    };')
+        lines.append('')
 
-    # Keymap (layers) - using urob's Colemak-DH layout
-    output.append('')
-    output.append('''    keymap {
-        compatible = "zmk,keymap";
+    # Keymap layers
+    lines.append('    keymap {')
+    lines.append('        compatible = "zmk,keymap";')
+    lines.append('')
+    for layer in state.layers:
+        lines.append(layer)
+        lines.append('')
+    lines.append('    };')
 
-        layer_Base {
-            display-name = "Base";
-            bindings = <
-//╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
-    &kp Q         &kp W         &kp F         &kp P         &kp B           &kp J         &kp L         &kp U         &kp Y         &kp SQT
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &hml LGUI A   &hml LALT R   &hml LSHFT S  &hml LCTRL T  &kp G           &kp M         &hmr LCTRL N  &hmr RSHFT E  &hmr LALT I   &hmr LGUI O
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &kp Z         &kp X         &kp C         &kp D         &kp V           &kp K         &kp H         &comma_morph  &dot_morph    &qexcl
-//╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
-                                &none         &lt_spc NAV 0 &lt FN RET      &smart_num NUM 0 &magic_shift LSHFT 0 &none
-//                            ╰─────────────┴─────────────┴─────────────╯ ╰─────────────┴─────────────┴─────────────╯
-            >;
-        };
+    lines.append('};')
 
-        layer_Nav {
-            display-name = "Nav";
-            bindings = <
-//╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
-    &kp LA(F4)    &trans        &kp LS(TAB)   &swapper      &trans          &kp PG_UP     &mt LC(BSPC) BSPC &mt LC(HOME) UP &mt LC(DEL) DEL &trans
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &sk LGUI      &sk LALT      &sk LSHFT     &sk LCTRL     &trans          &kp PG_DN     &mt_home 0 LEFT &mt LC(END) DOWN &mt_end 0 RIGHT &kp RET
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &trans        &trans        &trans        &trans        &trans          &kp INS       &kp TAB       &trans        &trans        &trans
-//╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
-                                &trans        &trans        &trans          &trans        &kp K_CANCEL  &trans
-//                            ╰─────────────┴─────────────┴─────────────╯ ╰─────────────┴─────────────┴─────────────╯
-            >;
-        };
-
-        layer_Fn {
-            display-name = "Fn";
-            bindings = <
-//╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
-    &kp F12       &kp F7        &kp F8        &kp F9        &trans          &trans        &kp C_PREV    &kp C_VOL_UP  &kp C_NEXT    &trans
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &hml LGUI F11 &hml LALT F4  &hml LSHFT F5 &hml LCTRL F6 &trans          &trans        &hmr LCTRL LG(LC(LEFT)) &hmr RSHFT C_VOL_DN &hmr LALT LG(LC(RIGHT)) &trans
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &kp F10       &kp F1        &kp F2        &kp F3        &trans          &kp LG(LC(LS(A))) &kp LG(LC(LS(Q))) &kp LA(GRAVE) &trans &trans
-//╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
-                                &trans        &trans        &trans          &kp C_MUTE    &kp C_PP      &trans
-//                            ╰─────────────┴─────────────┴─────────────╯ ╰─────────────┴─────────────┴─────────────╯
-            >;
-        };
-
-        layer_Num {
-            display-name = "Num";
-            bindings = <
-//╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
-    &trans        &kp N7        &kp N8        &kp N9        &trans          &trans        &trans        &trans        &trans        &trans
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &hml LGUI N0  &hml LALT N4  &hml LSHFT N5 &hml LCTRL N6 &trans          &trans        &trans        &trans        &trans        &trans
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &trans        &kp N1        &kp N2        &kp N3        &trans          &trans        &trans        &trans        &trans        &trans
-//╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
-                                &trans        &trans        &trans          &trans        &trans        &trans
-//                            ╰─────────────┴─────────────┴─────────────╯ ╰─────────────┴─────────────┴─────────────╯
-            >;
-        };
-
-        layer_Sys {
-            display-name = "Sys";
-            bindings = <
-//╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
-    &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_CLR      &trans        &trans        &trans        &trans        &trans
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &trans        &trans        &trans        &trans        &bootloader     &bootloader   &trans        &trans        &trans        &trans
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &trans        &trans        &trans        &trans        &sys_reset      &sys_reset    &trans        &trans        &trans        &trans
-//╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
-                                &trans        &trans        &trans          &trans        &trans        &trans
-//                            ╰─────────────┴─────────────┴─────────────╯ ╰─────────────┴─────────────┴─────────────╯
-            >;
-        };
-
-        layer_Mouse {
-            display-name = "Mouse";
-            bindings = <
-//╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
-    &trans        &trans        &trans        &trans        &trans          &trans        &kp PG_UP     U_MS_U        &kp PG_DN     &trans
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &trans        &trans        &trans        &trans        &trans          U_WH_L        U_MS_L        U_MS_D        U_MS_R        U_WH_R
-//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &trans        &trans        &trans        &trans        &trans          &trans        &mkp LCLK     &mkp MCLK     &mkp RCLK     &trans
-//╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
-                                &trans        &trans        &trans          U_WH_U        U_WH_D        &trans
-//                            ╰─────────────┴─────────────┴─────────────╯ ╰─────────────┴─────────────┴─────────────╯
-            >;
-        };
-    };''')
-
-    output.append('};')  # Close root
-
-    return '\n'.join(output)
+    return '\n'.join(lines)
 
 
 def main():
     parser = argparse.ArgumentParser(description='Expand ZMK keymap macros to DTS format')
     parser.add_argument('--output', '-o', help='Output file (default: stdout)')
-    parser.add_argument('--commit', '-c', help='Override commit hash in header')
-    parser.add_argument('--config-dir', '-d', default='config', help='Config directory (default: config)')
+    parser.add_argument('--config-dir', '-d', default='config', help='Config directory')
+    parser.add_argument('--commit', '-c', help='Override commit hash')
 
     args = parser.parse_args()
 
     config_dir = Path(args.config_dir)
-    if not config_dir.exists():
-        print(f"Error: Config directory not found: {config_dir}", file=sys.stderr)
+    base_keymap = config_dir / 'base.keymap'
+
+    if not base_keymap.exists():
+        print(f"Error: {base_keymap} not found", file=sys.stderr)
         sys.exit(1)
 
-    expanded = generate_expanded_keymap(config_dir, args.commit)
+    # Read and process includes
+    content = base_keymap.read_text()
+    content = process_includes(content, config_dir)
+
+    # Parse everything
+    state = parse_content(content, config_dir)
+
+    # Generate output
+    commit_hash = args.commit or get_git_commit()
+    output = generate_output(state, commit_hash)
 
     if args.output:
-        Path(args.output).write_text(expanded)
+        Path(args.output).write_text(output)
         print(f"Expanded keymap written to: {args.output}", file=sys.stderr)
     else:
-        print(expanded)
+        print(output)
 
 
 if __name__ == '__main__':
