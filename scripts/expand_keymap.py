@@ -110,6 +110,40 @@ def strip_comments(text: str) -> str:
     return result
 
 
+def extract_macro_args(text: str, start_pos: int) -> Tuple[List[str], int]:
+    """Extract macro arguments handling nested parens. Returns (args, end_pos)."""
+    if text[start_pos] != '(':
+        return [], start_pos
+
+    depth = 0
+    current_arg = []
+    args = []
+    i = start_pos
+
+    while i < len(text):
+        c = text[i]
+        if c == '(':
+            depth += 1
+            if depth > 1:
+                current_arg.append(c)
+        elif c == ')':
+            depth -= 1
+            if depth == 0:
+                if current_arg:
+                    args.append(''.join(current_arg).strip())
+                return args, i + 1
+            else:
+                current_arg.append(c)
+        elif c == ',' and depth == 1:
+            args.append(''.join(current_arg).strip())
+            current_arg = []
+        else:
+            current_arg.append(c)
+        i += 1
+
+    return args, i
+
+
 def normalize_whitespace(text: str) -> str:
     """Normalize excessive whitespace from macro expansion."""
     # Replace multiple spaces with single space
@@ -547,22 +581,24 @@ def parse_content(content: str, config_dir: Path) -> ParseState:
                     state.leader_sequences.append(expanded)
                 continue
 
-            # Local macro calls that generate behaviors (MAKE_HRM, SIMPLE_MORPH, etc.)
+            # Local macro calls that generate behaviors (MAKE_HRM, SIMPLE_MORPH, MASK_MODS, etc.)
             for macro_name, macro in state.macros.items():
                 if macro.params and macro_name in stripped:
-                    # Try to parse as macro call
-                    pattern = rf'{macro_name}\s*\(([^)]+)\)'
-                    match = re.search(pattern, stripped)
+                    # Find macro call start
+                    match = re.search(rf'{macro_name}\s*\(', stripped)
                     if match:
-                        args = [a.strip() for a in match.group(1).split(',')]
-                        expanded_call = expand_parameterized_macro(macro_name, args, macro)
-                        # The expanded call might be another ZMK_* macro
-                        for btype in BEHAVIOR_TYPES:
-                            if f'ZMK_{btype}' in expanded_call:
-                                behavior = parse_zmk_behavior(expanded_call, btype, state.macros)
-                                if behavior:
-                                    state.behaviors.append(behavior)
-                                break
+                        # Use balanced paren extraction
+                        paren_start = match.end() - 1
+                        args, _ = extract_macro_args(stripped, paren_start)
+                        if len(args) == len(macro.params):
+                            expanded_call = expand_parameterized_macro(macro_name, args, macro)
+                            # The expanded call might be another ZMK_* macro
+                            for btype in BEHAVIOR_TYPES:
+                                if f'ZMK_{btype}' in expanded_call:
+                                    behavior = parse_zmk_behavior(expanded_call, btype, state.macros)
+                                    if behavior:
+                                        state.behaviors.append(behavior)
+                                    break
 
     return state
 

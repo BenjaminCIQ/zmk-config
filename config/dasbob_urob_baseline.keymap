@@ -116,6 +116,20 @@
             hold-trigger-key-positions = <0 1 2 3 4 10 11 12 13 14 20 21 22 23 24 30 31 32 33 34 35>;
         };
 
+        masked_home: masked_home {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp HOME>, <&kp HOME>;
+            mods = <(MOD_LCTL)>;
+        };
+
+        masked_end: masked_end {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp END>, <&kp END>;
+            mods = <(MOD_LCTL)>;
+        };
+
         mt_home: mt_home {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
