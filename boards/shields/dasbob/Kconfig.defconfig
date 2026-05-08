@@ -1,0 +1,34 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+# Keyboard name
+config ZMK_KEYBOARD_NAME
+	default "Dasben Keyboard"
+
+# Always enable split
+config ZMK_SPLIT
+	bool
+	default y
+
+# Central (USB / host side): left half talks to USB and BLE host; merges right half keys.
+config ZMK_SPLIT_ROLE_CENTRAL
+	bool
+	default y if SHIELD_DASBOB_LEFT
+
+# Peripheral (right half) connects to central only.
+config ZMK_SPLIT_ROLE_PERIPHERAL
+	bool
+	default y if SHIELD_DASBOB_RIGHT
+
+# Wired USB HID on the central (left) half only.
+config ZMK_USB_ENABLED
+	bool
+	default y if SHIELD_DASBOB_LEFT
+
+config USB_DEVICE_PRODUCT
+	string
+	default "Dasben Keyboard"
+
+config ZMK_BLE_ENABLED
+	bool
+	default y

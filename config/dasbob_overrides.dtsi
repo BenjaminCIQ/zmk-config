@@ -1,0 +1,88 @@
+/*
+ * Dasbob-specific overrides
+ * - Workman alpha layout
+ * - Autoshift punctuation (replaces morphs)
+ * - numword continue-list with UNDER
+ * - Legacy layers
+ */
+
+/* Autoshift behaviors */
+
+ZMK_MACRO(shifted,
+    #binding-cells = <1>;
+    bindings = <&macro_press &kp LSHFT &macro_param_1to1>,
+               <&macro_tap &kp MACRO_PLACEHOLDER>,
+               <&macro_release &kp LSHFT>;)
+
+ZMK_HOLD_TAP(as_ht, bindings = <&shifted>, <&kp>;
+             tapping-term-ms = <190>; flavor = "tap-preferred";)
+
+ZMK_MACRO(as,
+    #binding-cells = <1>;
+    bindings = <&macro_press &macro_param_1to1 &macro_param_1to2 &as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>,
+               <&macro_pause_for_release>,
+               <&macro_release &macro_param_1to1 &macro_param_1to2 &as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>;)
+
+/* numword override - add UNDER to continue-list */
+&num_word {
+    continue-list = <BACKSPACE DELETE DOT COMMA PLUS MINUS STAR FSLH EQUAL UNDER>;
+};
+
+/* Layer overrides - Workman Base with autoshift punctuation */
+
+#define LEGACY_NUM 6
+#define LEGACY_NAV 7
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        /* Override Base layer with Workman */
+        layer_Base {
+            display-name = "Base";
+            bindings = <
+//╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+    &kp Q         &kp D         &kp R         &kp W         &kp B           &kp J         &kp F         &kp U         &kp P         &as SEMI
+//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+    &hml LGUI A   &hml LALT S   &hml LSHFT H  &hml LCTRL T  &kp G           &kp Y         &hmr LCTRL N  &hmr RSHFT E  &hmr LALT O   &hmr LGUI I
+//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+    &kp Z         &kp X         &kp M         &kp C         &kp V           &kp K         &kp L         &as COMMA     &as DOT       &as SLASH
+//╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
+                                &none         &lt_spc NAV 0 &lt FN RET      SMART_NUM     MAGIC_SHIFT   &none
+//                            ╰─────────────┴─────────────┴─────────────╯ ╰─────────────┴─────────────┴─────────────╯
+            >;
+        };
+
+        /* Legacy Num - autoshift numbers */
+        layer_Legacy_Num {
+            display-name = "LegNum";
+            bindings = <
+//╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+    &as GRAVE     &as N7        &as N8        &as N9        ___             ___           ___           ___           &as MINUS     &as EQUAL
+//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+    &kp N0        &as N1        &as N2        &as N3        &kp DEL         ___           &kp LPAR      &kp LBRC      &kp LBKT      &as SQT
+//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+    &kp LS(LG(S)) &as N4        &as N5        &as N6        &kp TAB         ___           &kp RPAR      &kp RBRC      &kp RBKT      &as BSLH
+//╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
+                                ___           ___           ___             ___           ___           ___
+//                            ╰─────────────┴─────────────┴─────────────╯ ╰─────────────┴─────────────┴─────────────╯
+            >;
+        };
+
+        /* Legacy Nav */
+        layer_Legacy_Nav {
+            display-name = "LegNav";
+            bindings = <
+//╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+    ___           &kp F7        &kp F8        &kp F9        &kp F5          &kp K_CMENU   ___           &kp PG_UP     &kp PG_DN     &kp END
+//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+    ___           &kp F1        &kp F2        &kp F3        &kp F10         ___           &kp LEFT      &kp UP        &kp DOWN      &kp RIGHT
+//├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+    &caps_word    &kp F4        &kp F5        &kp F6        ___             ___           &kp LC(LG(LEFT)) &kp LC(LG(RIGHT)) &kp LS(LG(LEFT)) &kp LS(LG(RIGHT))
+//╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
+                                ___           ___           ___             ___           ___           ___
+//                            ╰─────────────┴─────────────┴─────────────╯ ╰─────────────┴─────────────┴─────────────╯
+            >;
+        };
+    };
+};
