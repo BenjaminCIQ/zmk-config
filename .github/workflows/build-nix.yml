@@ -5,6 +5,7 @@ on:
     paths:
       - config/**
       - build.yaml
+      - draw/config.yaml
 
 jobs:
   build:
@@ -13,3 +14,21 @@ jobs:
       # Set to 'gnuarmemb' (fastest), 'zephyr' or, 'zephyr-full' (most
       # compatible). ZMK Studio requires 'zephyr-full'.
       toolchain: zephyr
+
+  draw:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - name: Set up build environment
+        run: nix develop --command just init
+      - name: Draw keymap
+        run: nix develop --command just draw
+      - name: Commit updated images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add draw/*.svg draw/*.yaml
+          git diff --staged --quiet || git commit -m "Update keymap images [skip ci]"
+          git push
