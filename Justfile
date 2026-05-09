@@ -61,7 +61,7 @@ draw: _check_yq_version
     set -euo pipefail
     keymap -c "{{ draw }}/config.yaml" parse -z "{{ config }}/dasbob.keymap" --virtual-layers Combos >"{{ draw }}/base.yaml"
     yq -Yi '.combos.[].l = ["Combos"]' "{{ draw }}/base.yaml"
-    keymap -c "{{ draw }}/config.yaml" draw "{{ draw }}/base.yaml" -k "ferris/sweep" >"{{ draw }}/base.svg"
+    keymap -c "{{ draw }}/config.yaml" draw "{{ draw }}/base.yaml" -n "3x5+3" >"{{ draw }}/base.svg"
 
     jq_expr='
         def extract_label: if type == "string" then . else .t end;
@@ -85,7 +85,7 @@ draw: _check_yq_version
         .combos = [.combos[] | .l = ["Combos"]]
     '
     yq -y "$jq_expr" "{{ draw }}/base.yaml" >"{{ draw }}/overview.yaml"
-    keymap -c "{{ draw }}/config.yaml" draw "{{ draw }}/overview.yaml" -k "ferris/sweep" >"{{ draw }}/overview.svg"
+    keymap -c "{{ draw }}/config.yaml" draw "{{ draw }}/overview.yaml" -n "3x5+3" >"{{ draw }}/overview.svg"
     sed -i '/<text.*class="label"/d' "{{ draw }}/overview.svg"
 
 # initialize west
