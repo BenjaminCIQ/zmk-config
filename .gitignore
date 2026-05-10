@@ -6,5 +6,6 @@ firmware
 zephyr/*
 !zephyr/module.yml
 zmk
+**/keymap.json
 draw/base.yaml
 draw/overview.yaml
