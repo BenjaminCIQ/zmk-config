@@ -374,7 +374,7 @@
     combos {
         compatible = "zmk,combos";
 
-                                                                                                                                                        combo_esc {
+        combo_esc {
             bindings = <&kp ESC>;
             key-positions = <0 10>;
             layers = <0 1 2>;

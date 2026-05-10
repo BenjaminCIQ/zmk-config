@@ -3,7 +3,7 @@
 Generate mirrored (swap hands) layer from base layer.
 
 Reads dasbob.keymap, extracts base layer bindings, mirrors them,
-and replaces SWAP_HANDS_GEN layer content.
+and replaces SWP_GEN layer content.
 
 Usage:
     python generate_mirror.py [--keymap FILE]
@@ -141,8 +141,8 @@ def process_keymap(keymap_path: Path) -> str:
     # Format new layer content
     new_layer_content = format_layer(mirrored)
 
-    # Replace SWAP_HANDS_GEN layer content
-    pattern = r'(display-name\s*=\s*"SWAP_HANDS_GEN"[^}]*bindings\s*=\s*<)[^>]+(>)'
+    # Replace SWP_GEN layer content
+    pattern = r'(display-name\s*=\s*"SWP_GEN"[^}]*bindings\s*=\s*<)[^>]+(>)'
 
     def replacer(m):
         return m.group(1) + "\n" + new_layer_content + "\n            " + m.group(2)
@@ -150,9 +150,9 @@ def process_keymap(keymap_path: Path) -> str:
     new_content, count = re.subn(pattern, replacer, content, flags=re.DOTALL)
 
     if count == 0:
-        raise ValueError("Could not find SWAP_HANDS_GEN layer")
+        raise ValueError("Could not find SWP_GEN layer")
 
-    print(f"Updated SWAP_HANDS_GEN layer")
+    print(f"Updated SWP_GEN layer")
 
     return new_content
 
