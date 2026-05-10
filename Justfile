@@ -55,7 +55,7 @@ clean-all: clean
 clean-nix:
     nix-collect-garbage --delete-old
 
-# parse & plot keymap
+# parse & plot keymap (auto-detects layers from parsed keymap)
 draw: _check_yq_version
     #!/usr/bin/env bash
     set -euo pipefail
@@ -66,19 +66,35 @@ draw: _check_yq_version
     jq_expr='
         def extract_label: if type == "string" then . else .t end;
         def is_transparent: type == "object" and (.type == "trans" or .type == "held");
+
+        # Get layer names dynamically (exclude Combos virtual layer)
+        (.layers | keys | map(select(. != "Combos"))) as $layer_names |
+        ($layer_names[0] // "Base") as $base_name |
+        ($layer_names[1] // null) as $l1_name |
+        ($layer_names[2] // null) as $l2_name |
+        ($layer_names[3] // null) as $l3_name |
+        ($layer_names[4] // null) as $l4_name |
+
+        # Build layer arrays conditionally
+        [.layers[$base_name]] as $base_arr |
+        (if $l1_name then [.layers[$l1_name]] else [] end) as $l1_arr |
+        (if $l2_name then [.layers[$l2_name]] else [] end) as $l2_arr |
+        (if $l3_name then [.layers[$l3_name]] else [] end) as $l3_arr |
+        (if $l4_name then [.layers[$l4_name]] else [] end) as $l4_arr |
+
         .layers = {
-        Base: [
-            [.layers.Base, .layers.Nav, .layers.Fn, .layers.Num, .layers.Sys] | transpose[] |
+        ($base_name): [
+            ($base_arr + $l1_arr + $l2_arr + $l3_arr + $l4_arr) | transpose[] |
             (.[0] | if type == "string" then {t: .} else . end) as $base |
-            (.[1] | if is_transparent then null else extract_label end) as $nav |
-            (.[2] | if is_transparent then null else extract_label end) as $fn |
-            (.[3] | if is_transparent then null else extract_label end) as $num |
-            (.[4] | if is_transparent then null else extract_label end) as $sys |
+            (.[1] // null | if . == null or is_transparent then null else extract_label end) as $l1 |
+            (.[2] // null | if . == null or is_transparent then null else extract_label end) as $l2 |
+            (.[3] // null | if . == null or is_transparent then null else extract_label end) as $l3 |
+            (.[4] // null | if . == null or is_transparent then null else extract_label end) as $l4 |
             $base
-            + (if $nav == null then {} else {tr: $nav} end)
-            + (if $fn == null then {} else {tl: $fn} end)
-            + (if $num == null then {} else {bl: $num} end)
-            + (if $sys == null then {} else {br: $sys} end)
+            + (if $l1 == null then {} else {tr: $l1} end)
+            + (if $l2 == null then {} else {tl: $l2} end)
+            + (if $l3 == null then {} else {bl: $l3} end)
+            + (if $l4 == null then {} else {br: $l4} end)
         ],
         Combos: .layers.Combos
         } |

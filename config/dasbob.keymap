@@ -374,7 +374,7 @@
     combos {
         compatible = "zmk,combos";
 
-        combo_esc {
+                combo_esc {
             bindings = <&kp ESC>;
             key-positions = <0 10>;
             layers = <0 1 2>;
@@ -492,7 +492,7 @@
         layer_Base {
             display-name = "Base";
             bindings = <
-                &kp B &kp D &kp R &kp W &kp B &kp J &kp F &kp U &kp P &as SEMI
+                &kp Q &kp D &kp R &kp W &kp B &kp J &kp F &kp U &kp P &as SEMI
                 &hml LGUI A &hml LALT S &hml LSHFT H &hml LCTRL T &kp G &kp Y &hmr LCTRL N &hmr RSHFT E &hmr LALT O &hmr LGUI I
                 &kp Z &kp X &kp M &kp C &kp V &kp K &kp L &as COMMA &as DOT &as FSLH
                 &none &lt_spc 2 0 &lt FN BACKSPACE &smart_num NUM 0 &magic_shift LSHFT 0 &none
@@ -543,7 +543,7 @@
             display-name = "Mouse";
             bindings = <
                 &trans &trans &trans &trans &trans &trans &trans &kp PAGE_UP &kp PG_DN &trans
-                &trans &trans &trans &trans &trans &trans &mmv MOVE_LEFT &mmv MOVE_UP &mmv MOVE_DOWN &msc MOVE_RIGHT
+                &trans &trans &trans &trans &trans &trans &mmv MOVE_LEFT &mmv MOVE_UP &mmv MOVE_DOWN &mmv MOVE_RIGHT
                 &trans &trans &trans &trans &trans &trans &mkp LCLK &mkp MCLK &mkp RCLK &trans
                 &none &trans &trans &msc SCRL_UP &msc SCRL_DOWN &none
             >;
