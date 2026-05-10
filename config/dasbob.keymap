@@ -99,11 +99,11 @@
 
 / {
     behaviors {
-        /* Autoshift hold-tap for punctuation */
+        /* Autoshift hold-tap - hold sends shifted version */
         as_ht: as_ht {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
-            bindings = <&kp>, <&kp>;
+            bindings = <&shifted>, <&kp>;
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
             quick-tap-ms = <QUICK_TAP_MS>;
@@ -343,6 +343,34 @@
             };
         };
 
+    };
+
+    macros {
+        shifted: macro_shifted_kp {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            label = "MACRO_SHIFTED_KP";
+            bindings =
+                <&macro_press &kp LSHFT>,
+                <&macro_param_1to1 &macro_tap &kp MACRO_PLACEHOLDER>,
+                <&macro_release &kp LSHFT>;
+        };
+
+        as: autoshift {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            label = "AUTOSHIFT_KP";
+            bindings =
+                <&macro_press>,
+                <&macro_param_1to1>,
+                <&macro_param_1to2>,
+                <&as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>,
+                <&macro_pause_for_release>,
+                <&macro_release>,
+                <&macro_param_1to1>,
+                <&macro_param_1to2>,
+                <&as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>;
+        };
     };
 
     combos {
@@ -629,11 +657,11 @@
             display-name = "Base";
             bindings = <
 //╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮   ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
-    &kp Q         &kp D         &kp R         &kp W         &kp B             &kp J         &kp F         &kp U         &kp P         &as_ht COLON SEMI
+    &kp Q         &kp D         &kp R         &kp W         &kp B             &kp J         &kp F         &kp U         &kp P         &as SEMI
 //├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
     &hml LGUI A   &hml LALT S   &hml LSHFT H  &hml LCTRL T  &kp G             &kp Y         &hmr LCTRL N  &hmr RSHFT E  &hmr LALT O   &hmr LGUI I
 //├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &kp Z         &kp X         &kp M         &kp C         &kp V             &kp K         &kp L         &as_ht LT COMMA &as_ht GT DOT &as_ht QMARK FSLH
+    &kp Z         &kp X         &kp M         &kp C         &kp V             &kp K         &kp L         &as COMMA &as DOT &as FSLH
 //╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
                                 &none         &lt_spc NAV 0 &lt FN RET        &smart_num NUM 0 &magic_shift LSHFT 0 &none
             >;
@@ -671,11 +699,11 @@
             display-name = "Num";
             bindings = <
 //╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮   ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
-    &trans        &as_ht AMPS N7 &as_ht STAR N8 &as_ht LPAR N9 &trans         &trans        &trans        &trans        &trans        &trans
+    &trans        &as N7 &as N8 &as N9 &trans         &trans        &trans        &trans        &trans        &trans
 //├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &as_ht RPAR N0 &as_ht DLLR N4 &as_ht PRCNT N5 &as_ht CARET N6 &trans      &trans        &trans        &trans        &trans        &trans
+    &as N0 &as N4 &as N5 &as N6 &trans      &trans        &trans        &trans        &trans        &trans
 //├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &trans        &as_ht EXCL N1 &as_ht AT N2 &as_ht HASH N3 &trans           &trans        &trans        &trans        &trans        &trans
+    &trans        &as N1 &as N2 &as N3 &trans           &trans        &trans        &trans        &trans        &trans
 //╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
                                 &none         &trans        &trans            &trans        &trans        &none
             >;
@@ -714,11 +742,11 @@
             display-name = "LegNum";
             bindings = <
 //╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮   ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
-    &as_ht TILDE GRAVE &as_ht AMPS N7 &as_ht STAR N8 &as_ht LPAR N9 &trans  &trans        &trans        &trans        &as_ht UNDER MINUS &as_ht PLUS EQUAL
+    &as GRAVE &as N7 &as N8 &as N9 &trans  &trans        &trans        &trans        &as MINUS &as EQUAL
 //├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &kp N0        &as_ht EXCL N1 &as_ht AT N2 &as_ht HASH N3 &kp DEL        &trans        &kp LPAR      &kp LBRC      &kp LBKT      &as_ht DQT SQT
+    &kp N0        &as N1 &as N2 &as N3 &kp DEL        &trans        &kp LPAR      &kp LBRC      &kp LBKT      &as SQT
 //├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-    &kp LS(LG(S)) &as_ht DLLR N4 &as_ht PRCNT N5 &as_ht CARET N6 &kp TAB    &trans        &kp RPAR      &kp RBRC      &kp RBKT      &as_ht PIPE BSLH
+    &kp LS(LG(S)) &as N4 &as N5 &as N6 &kp TAB    &trans        &kp RPAR      &kp RBRC      &kp RBKT      &as BSLH
 //╰─────────────┼─────────────┴─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┴─────────────┴─────────────╯
                                 &none         &trans        &trans            &trans        &trans        &none
             >;
