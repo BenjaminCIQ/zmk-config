@@ -25,7 +25,7 @@
 #define BASE 0
 #define SWAP_HANDS_GEN 1
 #define NUM 2
-#define NUM 3
+#define FN 3
 #define SYS 4
 #define MOUSE 5
 
