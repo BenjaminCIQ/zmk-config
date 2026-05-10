@@ -495,7 +495,7 @@
                 &kp B &kp D &kp R &kp W &kp B &kp J &kp F &kp U &kp P &as SEMI
                 &hml LGUI A &hml LALT S &hml LSHFT H &hml LCTRL T &kp G &kp Y &hmr LCTRL N &hmr RSHFT E &hmr LALT O &hmr LGUI I
                 &kp Z &kp X &kp M &kp C &kp V &kp K &kp L &as COMMA &as DOT &as FSLH
-                &none &lt_spc 1 0 &lt FN BACKSPACE &smart_num NUM 0 &magic_shift LSHFT 0 &none
+                &none &lt_spc 2 0 &lt FN BACKSPACE &smart_num NUM 0 &magic_shift LSHFT 0 &none
             >;
         };
 
