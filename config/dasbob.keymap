@@ -478,6 +478,20 @@
             key-positions = <19 29>;
             layers = <0>;
         };
+
+        scrl_up {
+            bindings = <&kp SCRL_UP>;
+            key-positions = <7 17>;
+            layers = <3>;
+            require-prior-idle-ms = <150>;
+        };
+
+        scrl_dwn {
+            bindings = <&kp SCRL_DOWN>;
+            key-positions = <8 18>;
+            layers = <3>;
+            require-prior-idle-ms = <150>;
+        };
     };
 
     conditional_layers {
