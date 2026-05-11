@@ -119,7 +119,6 @@ text.br, use.br { fill: var(--color-sys); }
 <g transform="translate(270, 28)" class="key keypos-4">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">B</text>
-<text x="24" y="22" class="key br"><tspan style="font-size: 64%">&amp;macro_smi…</tspan></text>
 </g>
 <g transform="translate(360, 28)" class="key keypos-5">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
@@ -129,6 +128,7 @@ text.br, use.br { fill: var(--color-sys); }
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">F</text>
 <text x="-24" y="-22" class="key tl"><tspan style="font-size: 64%">&amp;dm DM_SLO…</tspan></text>
+<text x="24" y="-22" class="key tr"><tspan style="font-size: 78%">SCROLL UP</tspan></text>
 </g>
 <g transform="translate(480, 28)" class="key keypos-7">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
@@ -189,11 +189,11 @@ text.br, use.br { fill: var(--color-sys); }
 <g transform="translate(270, 84)" class="key keypos-14">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">G</text>
-<text x="24" y="22" class="key br"><tspan style="font-size: 64%">&amp;macro_cha…</tspan></text>
 </g>
 <g transform="translate(360, 84)" class="key keypos-15">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">Y</text>
+<text x="24" y="-22" class="key tr"><tspan style="font-size: 64%">SCROLL DOWN</tspan></text>
 </g>
 <g transform="translate(420, 84)" class="key keypos-16">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
@@ -520,7 +520,7 @@ text.br, use.br { fill: var(--color-sys); }
 <g class="combo combopos-16">
 <rect rx="6" ry="6" x="256" y="43" width="28" height="26" class="combo"/>
 <text x="270" y="56" class="combo tap">Macro</text>
-<text x="270" y="65" class="combo hold">toggle</text>
+<text x="270" y="65" class="combo hold">Macro</text>
 </g>
 </g>
 </g>
