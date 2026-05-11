@@ -339,6 +339,15 @@
             quick-tap-ms = <200>;
             flavor = "balanced";
         };
+
+        sticky_toggle: sticky_toggle {
+            compatible = "zmk,behavior-hold-tap";
+            label = "STICKY_TOGGLE";
+            bindings = <&tog>, <&sl>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <220>;
+        };
     };
 
     macros {
@@ -365,20 +374,6 @@
                 <&macro_pause_for_release>,
                 <&macro_release>,
                 <&macro_param_1to1 &macro_param_1to2 &as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>;
-        };
-
-        macro_change: commit_change {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&kp LBKT &kp TILDE &kp RBKT &kp SPACE>;
-            label = "COMMIT_CHANGE";
-        };
-
-        macro_smile: macro_smile {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&kp COLON &kp MINUS &kp RPAR &kp SPACE>;
-            label = "MACRO_SMILE";
         };
     };
 
@@ -501,8 +496,8 @@
             require-prior-idle-ms = <150>;
         };
 
-        combo_tg_makro {
-            bindings = <&tog 6>;
+        combo_to_makro_layer {
+            bindings = <&sticky_toggle 6 6>;
             key-positions = <4 14>;
             layers = <0>;
             require-prior-idle-ms = <150>;
@@ -534,30 +529,30 @@
         layer_SWP_GEN {
             display-name = "SWP_GEN";
             bindings = <
-                &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
-                &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
-                &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
-                &none &lt_spc 2 SPACE &magic_shift LEFT_SHIFT 0 &lt_bs_del FN 0 &lt_spc 2 SPACE &smart_num 5 0
+&as SEMI     &kp P        &kp U         &kp F            &kp J                      &kp B            &kp W            &kp R           &kp D        &kp Q
+&hml LGUI I  &hml LALT O  &hml LSHFT E  &hml LCTRL N     &kp Y                      &kp G            &hmr LCTRL T     &hmr RSHFT H    &hmr LALT S  &hmr LGUI A
+&as FSLH     &as DOT      &as COMMA     &kp L            &kp K                      &kp V            &kp C            &kp M           &kp X        &kp Z
+                          &none         &lt_spc 2 SPACE  &magic_shift LEFT_SHIFT 0  &lt_bs_del FN 0  &lt_spc 2 SPACE  &smart_num 5 0
             >;
         };
 
         layer_NUM {
             display-name = "NUM";
             bindings = <
-&as GRAVE      &as N7  &as N8  &as N9  &macro_smile   &trans  &trans    &trans    &as MINUS  &as EQUAL
-&kp N0         &as N1  &as N2  &as N3  &macro_change  &trans  &kp LPAR  &kp LBRC  &kp LBKT   &trans
-&kp LS(LG(S))  &as N4  &as N5  &as N6  &trans         &trans  &kp RPAR  &kp RBRC  &kp RBKT   &trans
-                       &trans  &trans  &trans         &trans  &trans    &trans
+&as GRAVE      &as N7  &as N8  &as N9  &trans  &trans  &trans    &trans    &as MINUS  &as EQUAL
+&kp N0         &as N1  &as N2  &as N3  &trans  &trans  &kp LPAR  &kp LBRC  &kp LBKT   &trans
+&kp LS(LG(S))  &as N4  &as N5  &as N6  &trans  &trans  &kp RPAR  &kp RBRC  &kp RBKT   &trans
+                       &trans  &trans  &trans  &trans  &trans    &trans
             >;
         };
 
         layer_FN {
             display-name = "FN";
             bindings = <
-&kp F12        &kp F7        &kp F8         &kp F9         &trans  &trans  &trans            &kp PAGE_UP        &kp PAGE_DOWN     &kp END
-&hml LGUI F10  &hml LALT F1  &hml LSHFT F2  &hml LCTRL F3  &trans  &trans  &kp LEFT          &kp UP             &kp DOWN          &kp RIGHT
-&kp F11        &kp F4        &kp F5         &kp F6         &trans  &trans  &kp LC(LG(LEFT))  &kp LC(LG(RIGHT))  &kp LS(LG(LEFT))  &kp LS(LG(RIGHT))
-                             &trans         &trans         &trans  &trans  &trans            &trans
+&kp F12        &kp F7        &kp F8         &kp F9         &trans  &trans             &kp K_SCROLL_UP   &kp PAGE_UP        &kp PAGE_DOWN     &kp END
+&hml LGUI F10  &hml LALT F1  &hml LSHFT F2  &hml LCTRL F3  &trans  &kp K_SCROLL_DOWN  &kp LEFT          &kp UP             &kp DOWN          &kp RIGHT
+&kp F11        &kp F4        &kp F5         &kp F6         &trans  &trans             &kp LC(LG(LEFT))  &kp LC(LG(RIGHT))  &kp LS(LG(LEFT))  &kp LS(LG(RIGHT))
+                             &trans         &trans         &trans  &trans             &trans            &trans
             >;
         };
 
