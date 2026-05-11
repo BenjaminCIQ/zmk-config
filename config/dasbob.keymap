@@ -17,13 +17,13 @@
 
 #include <input/processors.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <dt-bindings/zmk/dynamic_macros.h>
+#include <behaviors/dynamic_macro.dtsi>
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
-#include <dt-bindings/zmk/dynamic_macros.h>
-#include <behaviors/dynamic_macro.dtsi>
 
 #define BASE 0
 #define SWAP_HANDS_GEN 1
@@ -389,13 +389,6 @@
             bindings = <&kp COLON &kp MINUS &kp RPAR &kp SPACE>;
             label = "MACRO_SMILE";
         };
-
-        macro_pass: macro_pass {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&kp A &kp A &kp A &kp RET>;
-            label = "MACRO_PASS";
-        };
     };
 
     combos {
@@ -540,70 +533,70 @@
         layer_Base {
             display-name = "Base";
             bindings = <
-&kp Q &kp D &kp R &kp W &kp B &kp J &kp F &kp U &kp P &as SEMI
-&hml LGUI A &hml LALT S &hml LSHFT H &hml LCTRL T &kp G &kp Y &hmr LCTRL N &hmr RSHFT E &hmr LALT O &hmr LGUI I
-                &kp Z &kp X &kp M &kp C &kp V &kp K &kp L &as COMMA &as DOT &as FSLH
-                &smart_num 5 0 &lt_spc 2 SPACE &lt_bs_del FN 0 &magic_shift LEFT_SHIFT 0 &lt_spc 2 SPACE &none
+&kp Q        &kp D        &kp R           &kp W            &kp B            &kp J                      &kp F            &kp U         &kp P        &as SEMI
+&hml LGUI A  &hml LALT S  &hml LSHFT H    &hml LCTRL T     &kp G            &kp Y                      &hmr LCTRL N     &hmr RSHFT E  &hmr LALT O  &hmr LGUI I
+&kp Z        &kp X        &kp M           &kp C            &kp V            &kp K                      &kp L            &as COMMA     &as DOT      &as FSLH
+                          &smart_num 5 0  &lt_spc 2 SPACE  &lt_bs_del FN 0  &magic_shift LEFT_SHIFT 0  &lt_spc 2 SPACE  &none
             >;
         };
 
         layer_SWP_GEN {
             display-name = "SWP_GEN";
             bindings = <
-                &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
-                &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
-                &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
-                &none &lt_spc 2 SPACE &magic_shift LEFT_SHIFT 0 &lt_bs_del FN 0 &lt_spc 2 SPACE &smart_num 5 0
+&as SEMI     &kp P        &kp U         &kp F            &kp J                      &kp B            &kp W            &kp R           &kp D        &kp Q
+&hml LGUI I  &hml LALT O  &hml LSHFT E  &hml LCTRL N     &kp Y                      &kp G            &hmr LCTRL T     &hmr RSHFT H    &hmr LALT S  &hmr LGUI A
+&as FSLH     &as DOT      &as COMMA     &kp L            &kp K                      &kp V            &kp C            &kp M           &kp X        &kp Z
+                          &none         &lt_spc 2 SPACE  &magic_shift LEFT_SHIFT 0  &lt_bs_del FN 0  &lt_spc 2 SPACE  &smart_num 5 0
             >;
         };
 
         layer_NUM {
             display-name = "NUM";
             bindings = <
-                &as GRAVE &as N7 &as N8 &as N9 &macro_smile &trans &trans &trans &as MINUS &as EQUAL
-                &kp N0 &as N1 &as N2 &as N3 &macro_change &trans &kp LPAR &kp LBRC &kp LBKT &trans
-                &kp LS(LG(S)) &as N4 &as N5 &as N6 &trans &trans &kp RPAR &kp RBRC &kp RBKT &trans
-                &trans &trans &trans &trans &trans &trans
+&as GRAVE      &as N7  &as N8  &as N9  &macro_smile   &trans  &trans    &trans    &as MINUS  &as EQUAL
+&kp N0         &as N1  &as N2  &as N3  &macro_change  &trans  &kp LPAR  &kp LBRC  &kp LBKT   &trans
+&kp LS(LG(S))  &as N4  &as N5  &as N6  &trans         &trans  &kp RPAR  &kp RBRC  &kp RBKT   &trans
+                       &trans  &trans  &trans         &trans  &trans    &trans
             >;
         };
 
         layer_FN {
             display-name = "FN";
             bindings = <
-                &kp F12 &kp F7 &kp F8 &kp F9 &trans &trans &trans &kp PAGE_UP &kp PAGE_DOWN &kp END
-                &hml LGUI F10 &hml LALT F1 &hml LSHFT F2 &hml LCTRL F3 &trans &trans &kp LEFT &kp UP &kp DOWN &kp RIGHT
-                &kp F11 &kp F4 &kp F5 &kp F6 &trans &trans &kp LC(LG(LEFT)) &kp LC(LG(RIGHT)) &kp LS(LG(LEFT)) &kp LS(LG(RIGHT))
-                &trans &trans &trans &trans &trans &trans
+&kp F12        &kp F7        &kp F8         &kp F9         &trans  &trans  &trans            &kp PAGE_UP        &kp PAGE_DOWN     &kp END
+&hml LGUI F10  &hml LALT F1  &hml LSHFT F2  &hml LCTRL F3  &trans  &trans  &kp LEFT          &kp UP             &kp DOWN          &kp RIGHT
+&kp F11        &kp F4        &kp F5         &kp F6         &trans  &trans  &kp LC(LG(LEFT))  &kp LC(LG(RIGHT))  &kp LS(LG(LEFT))  &kp LS(LG(RIGHT))
+                             &trans         &trans         &trans  &trans  &trans            &trans
             >;
         };
 
         layer_Sys {
             display-name = "Sys";
             bindings = <
-                &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR &trans &out OUT_USB &out OUT_BLE &trans &trans
-                &trans &trans &trans &tog 1 &bootloader &bootloader &tog 1 &trans &trans &trans
-                &studio_unlock &trans &trans &trans &sys_reset &sys_reset &trans &trans &trans &studio_unlock
-                &trans &trans &trans &trans &trans &trans
+&bt BT_SEL 0    &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_CLR   &trans       &out OUT_USB  &out OUT_BLE  &trans  &trans
+&trans          &trans        &trans        &tog 1        &bootloader  &bootloader  &tog 1        &trans        &trans  &trans
+&studio_unlock  &trans        &trans        &trans        &sys_reset   &sys_reset   &trans        &trans        &trans  &studio_unlock
+                              &trans        &trans        &trans       &trans       &trans        &trans
             >;
         };
 
         layer_Mouse {
             display-name = "Mouse";
             bindings = <
-                &trans &trans &trans &trans &trans &trans &trans &kp PAGE_UP &kp PG_DN &trans
-                &trans &trans &trans &trans &trans &trans &morph_mouse_mov_scrl_left &morph_mouse_mov_srcl_up &morph_mouse_mov_srcl_down &morph_mouse_mov_srcl_right
-                &trans &trans &trans &trans &trans &trans &mkp LCLK &mkp MCLK &mkp RCLK &trans
-                &trans &trans &trans &trans &trans &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans                      &kp PAGE_UP               &kp PG_DN                   &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &morph_mouse_mov_scrl_left  &morph_mouse_mov_srcl_up  &morph_mouse_mov_srcl_down  &morph_mouse_mov_srcl_right
+&trans  &trans  &trans  &trans  &trans  &trans  &mkp LCLK                   &mkp MCLK                 &mkp RCLK                   &trans
+                &trans  &trans  &trans  &trans  &trans                      &trans
             >;
         };
 
         layer_Macro {
             display-name = "Macro";
             bindings = <
-                &dm DM_SLOT 0 &dm DM_SLOT 1 &dm DM_SLOT 2 &dm DM_SLOT 3 &none &none &dm DM_SLOT 4 &dm DM_SLOT 5 &dm DM_SLOT 6 &dm DM_SLOT 7
-                &dm DM_SLOT 8 &dm DM_SLOT 9 &dm DM_SLOT 10 &dm DM_SLOT 11 &none &none &dm DM_SLOT 12 &dm DM_SLOT 13 &dm DM_SLOT 14 &dm DM_SLOT 15
-                &none &none &none &none &none &none &none &none &none &none
-                &dm DM_REC 0 &dm DM_STP 0 &dm DM_DEL 0 &dm DM_STATE 0 &tog MACRO &none
+&dm DM_SLOT 0  &dm DM_SLOT 1  &dm DM_SLOT 2   &dm DM_SLOT 3   &none         &none           &dm DM_SLOT 4   &dm DM_SLOT 5   &dm DM_SLOT 6   &dm DM_SLOT 7
+&dm DM_SLOT 8  &dm DM_SLOT 9  &dm DM_SLOT 10  &dm DM_SLOT 11  &none         &none           &dm DM_SLOT 12  &dm DM_SLOT 13  &dm DM_SLOT 14  &dm DM_SLOT 15
+&none          &none          &none           &none           &none         &none           &none           &none           &none           &none
+                              &dm DM_REC 0    &dm DM_STP 0    &dm DM_DEL 0  &dm DM_STATE 0  &tog MACRO      &none
             >;
         };
     };
