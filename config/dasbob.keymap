@@ -93,15 +93,18 @@
 &caps_word { /delete-property/ ignore-modifiers; };
 
 /* numword continue-list override - add UNDER for snake_case */
+
 &num_word { continue-list = <BACKSPACE DELETE DOT COMMA PLUS MINUS STAR FSLH EQUAL UNDER>; };
 
 / {
     behaviors {
         /* Autoshift hold-tap - hold sends shifted version */
-         as_ht: as_ht {
+
+        as_ht: as_ht {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             bindings = <&shifted>, <&kp>;
+
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
             quick-tap-ms = <QUICK_TAP_MS>;
@@ -331,6 +334,17 @@
             #binding-cells = <0>;
             mods = <(MOD_LCTL)>;
         };
+
+        lt_bs_del: lt_bs_del {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LT_BS_DEL";
+            bindings = <&mo>, <&bs_del>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <175>;
+            flavor = "balanced";
+        };
     };
 
     macros {
@@ -339,9 +353,12 @@
             label = "MACRO_SHIFTED_KP";
             compatible = "zmk,behavior-macro-one-param";
             bindings =
-            <&macro_press &kp LSHFT>,
-            <&macro_param_1to1 &macro_tap &kp MACRO_PLACEHOLDER>,
-            <&macro_release &kp LSHFT>;
+                <&macro_press>,
+                <&kp LSHFT &macro_param_1to1>,
+                <&macro_tap>,
+                <&kp MACRO_PLACEHOLDER>,
+                <&macro_release>,
+                <&kp LSHFT>;
         };
 
         as: autoshift {
@@ -349,15 +366,11 @@
             #binding-cells = <1>;
             label = "AUTOSHIFT_KP";
             bindings =
-            <&macro_press>,
-            <&macro_param_1to1>,
-            <&macro_param_1to2>,
-            <&as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>,
-            <&macro_pause_for_release>,
-            <&macro_release>,
-            <&macro_param_1to1>,
-            <&macro_param_1to2>,
-            <&as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>;
+                <&macro_press>,
+                <&macro_param_1to1 &macro_param_1to2 &as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>,
+                <&macro_pause_for_release>,
+                <&macro_release>,
+                <&macro_param_1to1 &macro_param_1to2 &as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>;
         };
     };
 
@@ -482,20 +495,20 @@
         layer_Base {
             display-name = "Base";
             bindings = <
-&kp Q        &kp D        &kp R         &kp W            &kp B             &kp J             &kp F                 &kp U         &kp P        &as SEMI
-&hml LGUI A  &hml LALT S  &hml LSHFT H  &hml LCTRL T     &kp G             &kp Y             &hmr LCTRL N          &hmr RSHFT E  &hmr LALT O  &hmr LGUI I
-&kp Z        &kp X        &kp M         &kp C            &kp V             &kp K             &kp L                 &as COMMA     &as DOT      &as FSLH
-                          &none         &lt_spc 2 SPACE  &lt FN BACKSPACE  &smart_num NUM 0  &magic_shift LSHFT 0  &none
+&kp Q        &kp D        &kp R         &kp W            &kp B            &kp J             &kp F                 &kp U         &kp P        &as SEMI
+&hml LGUI A  &hml LALT S  &hml LSHFT H  &hml LCTRL T     &kp G            &kp Y             &hmr LCTRL N          &hmr RSHFT E  &hmr LALT O  &hmr LGUI I
+&kp Z        &kp X        &kp M         &kp C            &kp V            &kp K             &kp L                 &as COMMA     &as DOT      &as FSLH
+                          &none         &lt_spc 2 SPACE  &lt_bs_del FN 0  &smart_num NUM 0  &magic_shift LSHFT 0  &none
             >;
         };
 
         layer_SWP_GEN {
             display-name = "SWP_GEN";
             bindings = <
-                &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
-                &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
-                &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
-                &none &magic_shift RSHFT 0 &smart_num NUM 0 &lt FN BACKSPACE &lt_spc 2 SPACE &none
+&as SEMI     &kp P        &kp U         &kp F                 &kp J             &kp B             &kp W            &kp R         &kp D        &kp Q
+&hml LGUI I  &hml LALT O  &hml LSHFT E  &hml LCTRL N          &kp Y             &kp G             &hmr LCTRL T     &hmr RSHFT H  &hmr LALT S  &hmr LGUI A
+&as FSLH     &as DOT      &as COMMA     &kp L                 &kp K             &kp V             &kp C            &kp M         &kp X        &kp Z
+                          &none         &magic_shift RSHFT 0  &smart_num NUM 0  &lt FN BACKSPACE  &lt_spc 2 SPACE  &none
             >;
         };
 
