@@ -11,7 +11,7 @@ This fork adapts urob's config for the Dasbob 36-key board and adds:
 - CI/build automation that generates the swap-hands layer, builds firmware, and redraws keymap SVGs.
 
 <img src="./draw/overview.svg" alt="Keymap layout" width="100%" /><br />
-([Click here](https://raw.githubusercontent.com/urob/zmk-config/refs/heads/main/draw/dasbob.svg)
+([Click here](./draw/dasbob.svg)
 for a breakdown by layer – powered by
 [keymap-drawer](https://github.com/caksoylar/keymap-drawer).)
 
