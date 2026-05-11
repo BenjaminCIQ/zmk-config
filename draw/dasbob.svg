@@ -1028,8 +1028,11 @@ text.br, use.br { fill: var(--color-sys); }
 <g transform="translate(270, 196)" class="key trans keypos-32">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key trans"/>
 </g>
-<g transform="translate(360, 196)" class="key trans keypos-33">
-<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key trans"/>
+<g transform="translate(360, 196)" class="key keypos-33">
+<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
+<a href="#Mouse">
+<text x="0" y="1" class="key tap layer-activator">Mouse</text>
+</a><text x="0" y="22" class="key hold">toggle</text>
 </g>
 <g transform="translate(420, 196)" class="key trans keypos-34">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key trans"/>
@@ -1332,9 +1335,9 @@ text.br, use.br { fill: var(--color-sys); }
 </g>
 <g class="combo combopos-1">
 <rect rx="6" ry="6" x="346" y="43" width="28" height="26" class="combo"/>
-<text x="360" y="56" class="combo tap">
-<tspan x="360" dy="-0.6em">Smart</tspan><tspan x="360" dy="1.2em">Mouse</tspan>
-</text>
+<a href="#Mouse">
+<text x="360" y="56" class="combo tap layer-activator">Mouse</text>
+</a><text x="360" y="65" class="combo hold">toggle</text>
 </g>
 <g class="combo combopos-2">
 <rect rx="6" ry="6" x="76" y="43" width="28" height="26" class="combo"/>
