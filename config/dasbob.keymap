@@ -93,12 +93,19 @@
 &caps_word { /delete-property/ ignore-modifiers; };
 
 /* numword continue-list override - add UNDER for snake_case */
-
 &num_word { continue-list = <BACKSPACE DELETE DOT COMMA PLUS MINUS STAR FSLH EQUAL UNDER>; };
 
 / {
     behaviors {
         /* Autoshift hold-tap - hold sends shifted version */
+         as_ht: as_ht {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            bindings = <&shifted>, <&kp>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <QUICK_TAP_MS>;
+        };
 
         hml: hml {
             compatible = "zmk,behavior-hold-tap";
@@ -230,48 +237,6 @@
             ignored-key-positions = <2 7 16 17 18>;
         };
 
-        comma_morph: comma_morph {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            mods = <(MOD_LSFT | MOD_RSFT)>;
-            bindings = <&kp COMMA>, <&comma_inner_morph>;
-        };
-
-        comma_inner_morph: comma_inner_morph {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            mods = <(MOD_LCTL | MOD_RCTL)>;
-            bindings = <&kp SEMICOLON>, <&kp LESS_THAN>;
-        };
-
-        dot_inner_morph: dot_inner_morph {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            mods = <(MOD_LCTL | MOD_RCTL)>;
-            bindings = <&kp COLON>, <&kp GREATER_THAN>;
-        };
-
-        qexcl: qexcl {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            mods = <(MOD_LSFT | MOD_RSFT)>;
-            bindings = <&kp QMARK>, <&kp EXCL>;
-        };
-
-        lpar_lt: lpar_lt {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            mods = <(MOD_LSFT | MOD_RSFT)>;
-            bindings = <&kp LPAR>, <&kp LT>;
-        };
-
-        rpar_gt: rpar_gt {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            mods = <(MOD_LSFT | MOD_RSFT)>;
-            bindings = <&kp RPAR>, <&kp GT>;
-        };
-
         lt_spc: lt_spc {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -280,14 +245,6 @@
             flavor = "balanced";
             tapping-term-ms = <200>;
             quick-tap-ms = <175>;
-        };
-
-        dot_spc: dot_spc {
-            compatible = "zmk,behavior-macro";
-            #binding-cells = <0>;
-            bindings = <&kp DOT &kp SPACE &sk LSHFT>;
-            wait-ms = <0>;
-            tap-ms = <5>;
         };
 
         bs_del: bs_del {
@@ -463,7 +420,7 @@
         };
 
         combo_bspc {
-            bindings = <&kp BSPC>;
+            bindings = <&bs_del>;
             key-positions = <26 16>;
             layers = <0 1 2>;
             timeout-ms = <18>;
