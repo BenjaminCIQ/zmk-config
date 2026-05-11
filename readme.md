@@ -4,7 +4,7 @@ Fork adds:
 
 
 <img src="./draw/overview.svg" alt="Keymap layout" width="100%" /><br />
-([Click here](https://raw.githubusercontent.com/urob/zmk-config/refs/heads/main/draw/base.svg)
+([Click here](https://raw.githubusercontent.com/urob/zmk-config/refs/heads/main/draw/dasbob.svg)
 for a breakdown by layer – powered by
 [keymap-drawer](https://github.com/caksoylar/keymap-drawer).)
 
@@ -354,7 +354,7 @@ for many shells.)
 
 The build environment packages
 [keymap-drawer](https://github.com/caksoylar/keymap-drawer). `just draw` parses
-`base.keymap` and draws it to `draw/base.svg`.
+`dasbob.keymap` and draws it to `draw/dasbob.svg`.
 
 #### Devicetree formatter (experimental)
 

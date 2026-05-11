@@ -7,5 +7,5 @@ zephyr/*
 !zephyr/module.yml
 zmk
 **/keymap.json
-draw/base.yaml
+draw/dasbob.yaml
 draw/overview.yaml

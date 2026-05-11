@@ -6,6 +6,7 @@ on:
       - config/**
       - build.yaml
       - draw/config.yaml
+      - Justfile
 
 jobs:
   prepare:
