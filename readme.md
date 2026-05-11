@@ -17,6 +17,8 @@ for a breakdown by layer – powered by
 
 # urob's zmk-config
 
+Original upstream layered baseline diagram: [`draw/base.svg`](https://github.com/urob/zmk-config/blob/main/draw/base.svg).
+
 This is my personal [ZMK firmware](https://github.com/zmkfirmware/zmk/)
 configuration. It consists of a 34-keys base layout that is re-used for various
 boards of different sizes, including a Corneish Zen, Glove80 and Planck.
