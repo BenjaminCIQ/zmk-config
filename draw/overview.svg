@@ -317,8 +317,9 @@ text.br, use.br { fill: var(--color-sys); }
 </g>
 <g transform="translate(270, 196)" class="key keypos-32">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
-<text x="0" y="1" class="key tap"><tspan style="font-size: 78%">BACKSPACE</tspan></text>
+<text x="0" y="1" class="key tap">Bspc</text>
 <text x="0" y="22" class="key hold">FN</text>
+<text x="0" y="-22" class="key shifted">Del</text>
 <text x="24" y="22" class="key br">Smart</text>
 </g>
 <g transform="translate(360, 196)" class="key keypos-33">
@@ -326,7 +327,7 @@ text.br, use.br { fill: var(--color-sys); }
 <text x="0" y="1" class="key tap">Smart</text>
 <text x="0" y="22" class="key hold">NUM</text>
 <text x="-24" y="-22" class="key tl"><tspan style="font-size: 88%">Scroll ↑</tspan></text>
-<text x="24" y="22" class="key br"><tspan style="font-size: 78%">BACKSPACE</tspan></text>
+<text x="24" y="22" class="key br">Bspc</text>
 </g>
 <g transform="translate(420, 196)" class="key keypos-34">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
@@ -512,6 +513,18 @@ text.br, use.br { fill: var(--color-sys); }
 <g class="combo combopos-13">
 <rect rx="6" ry="6" x="586" y="99" width="28" height="26" class="combo"/>
 <text x="600" y="112" class="combo tap">\</text>
+</g>
+<g class="combo combopos-14">
+<rect rx="6" ry="6" x="466" y="43" width="28" height="26" class="combo"/>
+<text x="480" y="56" class="combo tap">
+<tspan x="480" dy="-0.6em">SCRL</tspan><tspan x="480" dy="1.2em">UP</tspan>
+</text>
+</g>
+<g class="combo combopos-15">
+<rect rx="6" ry="6" x="526" y="43" width="28" height="26" class="combo"/>
+<text x="540" y="56" class="combo tap">
+<tspan x="540" dy="-0.6em">SCRL</tspan><tspan x="540" dy="1.2em">DOWN</tspan>
+</text>
 </g>
 </g>
 </g>
