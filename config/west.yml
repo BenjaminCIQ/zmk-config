@@ -52,6 +52,10 @@ manifest:
     - name: zmk-unicode
       path: modules/zmk/unicode
       revision: 1a6dbc797a46c4a61c3c71a7a9d013a5d5aee49e # main (4/19/2026)
+    - name: zmk-dynamic-macros
+      path: modules/zmk/dynamic-macros
+      url: https://github.com/BenjaminCIQ/zmk_module_dynamic_makros
+      revision: main
 
     # Only source necessary Zephyr modules. Remove this entire section to restore
     # the default (needed for less common hardware).

@@ -22,6 +22,8 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
+#include <dt-bindings/zmk/dynamic_macros.h>
+#include <behaviors/dynamic_macro.dtsi>
 
 #define BASE 0
 #define SWAP_HANDS_GEN 1
@@ -29,6 +31,7 @@
 #define FN 3
 #define SYS 4
 #define MOUSE 5
+#define MACRO 6
 #define KEYS_L 0 1 2 3 4 10 11 12 13 14 20 21 22 23 24
 #define KEYS_R 5 6 7 8 9 15 16 17 18 19 25 26 27 28 29
 #define THUMBS 30 31 32 33 34 35
@@ -589,6 +592,16 @@
 &trans  &trans  &trans  &trans  &trans  &trans  &morph_mouse_mov_scrl_left  &morph_mouse_mov_srcl_up  &morph_mouse_mov_srcl_down  &morph_mouse_mov_srcl_right
 &trans  &trans  &trans  &trans  &trans  &trans  &mkp LCLK                   &mkp MCLK                 &mkp RCLK                   &trans
                 &trans  &trans  &trans  &trans  &trans                      &trans
+            >;
+        };
+
+        layer_Macro {
+            display-name = "Macro";
+            bindings = <
+&dm DM_SLOT 0   &dm DM_SLOT 1   &dm DM_SLOT 2   &dm DM_SLOT 3   &none           &none            &dm DM_SLOT 4   &dm DM_SLOT 5   &dm DM_SLOT 6   &dm DM_SLOT 7
+&dm DM_SLOT 8   &dm DM_SLOT 9   &dm DM_SLOT 10  &dm DM_SLOT 11  &none           &none            &dm DM_SLOT 12  &dm DM_SLOT 13  &dm DM_SLOT 14  &dm DM_SLOT 15
+&none           &none           &none           &none           &none           &none            &none           &none           &none           &none
+                                &dm DM_REC 0    &dm DM_STP 0    &dm DM_DEL 0    &dm DM_STATE 0   &tog MACRO      &none
             >;
         };
     };
