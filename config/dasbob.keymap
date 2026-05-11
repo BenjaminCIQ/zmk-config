@@ -505,10 +505,10 @@
         layer_SWP_GEN {
             display-name = "SWP_GEN";
             bindings = <
-&as SEMI     &kp P        &kp U         &kp F                 &kp J             &kp B             &kp W            &kp R         &kp D        &kp Q
-&hml LGUI I  &hml LALT O  &hml LSHFT E  &hml LCTRL N          &kp Y             &kp G             &hmr LCTRL T     &hmr RSHFT H  &hmr LALT S  &hmr LGUI A
-&as FSLH     &as DOT      &as COMMA     &kp L                 &kp K             &kp V             &kp C            &kp M         &kp X        &kp Z
-                          &none         &magic_shift RSHFT 0  &smart_num NUM 0  &lt FN BACKSPACE  &lt_spc 2 SPACE  &none
+                &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
+                &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
+                &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
+                &none &magic_shift RSHFT 0 &smart_num NUM 0 &lt_bs_del FN 0 &lt_spc 2 SPACE &none
             >;
         };
 
