@@ -1169,7 +1169,7 @@ text.br, use.br { fill: var(--color-sys); }
 <g transform="translate(270, 140)" class="key keypos-24">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-0.6em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_MOV</tspan>
+<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_MOV</tspan><tspan x="0" dy="1.2em">0</tspan>
 </text>
 </g>
 <g transform="translate(360, 140)" class="key keypos-25">
