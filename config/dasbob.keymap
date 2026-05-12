@@ -468,7 +468,7 @@
         };
 
         combo_to_makro_layer {
-            bindings = <&sticky_toggle 6 6>;
+            bindings = <&tog 6>;
             key-positions = <4 14>;
             layers = <0>;
             require-prior-idle-ms = <150>;
@@ -497,70 +497,70 @@
         layer_Base {
             display-name = "Base";
             bindings = <
-                &kp Q &kp D &kp R &kp W &kp B &kp J &kp F &kp U &kp P &as SEMI
-                &hml LGUI A &hml LALT S &hml LSHFT H &hml LCTRL T &kp G &kp Y &hmr LCTRL N &hmr RSHFT E &hmr LALT O &hmr LGUI I
-                &kp Z &kp X &kp M &kp C &kp V &kp K &kp L &as COMMA &as DOT &as FSLH
-                &smart_num 5 0 &lt_spc 2 SPACE &lt_bs_del FN 0 &magic_shift LEFT_SHIFT 0 &lt_spc 2 SPACE &none
+&kp Q        &kp D        &kp R           &kp W            &kp B            &kp J                      &kp F            &kp U         &kp P        &as SEMI
+&hml LGUI A  &hml LALT S  &hml LSHFT H    &hml LCTRL T     &kp G            &kp Y                      &hmr LCTRL N     &hmr RSHFT E  &hmr LALT O  &hmr LGUI I
+&kp Z        &kp X        &kp M           &kp C            &kp V            &kp K                      &kp L            &as COMMA     &as DOT      &as FSLH
+                          &smart_num 5 0  &lt_spc 2 SPACE  &lt_bs_del FN 0  &magic_shift LEFT_SHIFT 0  &lt_spc 2 SPACE  &none
             >;
         };
 
         layer_SWP_GEN {
             display-name = "SWP_GEN";
             bindings = <
-                &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
-                &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
-                &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
-                &none &lt_spc 2 SPACE &magic_shift LEFT_SHIFT 0 &lt_bs_del FN 0 &lt_spc 2 SPACE &smart_num 5 0
+&as SEMI     &kp P        &kp U         &kp F            &kp J                      &kp B            &kp W            &kp R           &kp D        &kp Q
+&hml LGUI I  &hml LALT O  &hml LSHFT E  &hml LCTRL N     &kp Y                      &kp G            &hmr LCTRL T     &hmr RSHFT H    &hmr LALT S  &hmr LGUI A
+&as FSLH     &as DOT      &as COMMA     &kp L            &kp K                      &kp V            &kp C            &kp M           &kp X        &kp Z
+                          &none         &lt_spc 2 SPACE  &magic_shift LEFT_SHIFT 0  &lt_bs_del FN 0  &lt_spc 2 SPACE  &smart_num 5 0
             >;
         };
 
         layer_NUM {
             display-name = "NUM";
             bindings = <
-                &as GRAVE &as N7 &as N8 &as N9 &trans &trans &trans &trans &as MINUS &trans
-                &kp N0 &as N1 &as N2 &as N3 &trans &trans &kp LPAR &kp LBRC &kp LBKT &as EQUAL
-                &kp LS(LG(S)) &as N4 &as N5 &as N6 &trans &trans &kp RPAR &kp RBRC &kp RBKT &trans
-                &trans &trans &trans &trans &trans &trans
+&as GRAVE      &as N7  &as N8  &as N9  &trans  &trans  &trans    &trans    &as MINUS  &trans
+&kp N0         &as N1  &as N2  &as N3  &trans  &trans  &kp LPAR  &kp LBRC  &kp LBKT   &as EQUAL
+&kp LS(LG(S))  &as N4  &as N5  &as N6  &trans  &trans  &kp RPAR  &kp RBRC  &kp RBKT   &trans
+                       &trans  &trans  &trans  &trans  &trans    &trans
             >;
         };
 
         layer_FN {
             display-name = "FN";
             bindings = <
-                &kp F12 &kp F7 &kp F8 &kp F9 &trans &trans &kp K_SCROLL_UP &kp PAGE_UP &kp PAGE_DOWN &kp END
-                &hml LGUI F10 &hml LALT F1 &hml LSHFT F2 &hml LCTRL F3 &trans &kp K_SCROLL_DOWN &kp LEFT &kp UP &kp DOWN &kp RIGHT
-                &kp F11 &kp F4 &kp F5 &kp F6 &trans &trans &kp LC(LG(LEFT)) &kp LC(LG(RIGHT)) &kp LS(LG(LEFT)) &kp LS(LG(RIGHT))
-                &trans &trans &trans &trans &trans &trans
+&kp F12        &kp F7        &kp F8         &kp F9         &trans  &trans             &kp K_SCROLL_UP   &kp PAGE_UP        &kp PAGE_DOWN     &kp END
+&hml LGUI F10  &hml LALT F1  &hml LSHFT F2  &hml LCTRL F3  &trans  &kp K_SCROLL_DOWN  &kp LEFT          &kp UP             &kp DOWN          &kp RIGHT
+&kp F11        &kp F4        &kp F5         &kp F6         &trans  &trans             &kp LC(LG(LEFT))  &kp LC(LG(RIGHT))  &kp LS(LG(LEFT))  &kp LS(LG(RIGHT))
+                             &trans         &trans         &trans  &trans             &trans            &trans
             >;
         };
 
         layer_Sys {
             display-name = "Sys";
             bindings = <
-                &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR &trans &out OUT_USB &out OUT_BLE &trans &trans
-                &trans &trans &trans &tog 1 &bootloader &bootloader &tog 1 &trans &trans &trans
-                &studio_unlock &trans &trans &trans &sys_reset &sys_reset &trans &trans &trans &studio_unlock
-                &trans &trans &trans &trans &trans &trans
+&bt BT_SEL 0    &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_CLR   &trans       &out OUT_USB  &out OUT_BLE  &trans  &trans
+&trans          &trans        &trans        &tog 1        &bootloader  &bootloader  &tog 1        &trans        &trans  &trans
+&studio_unlock  &trans        &trans        &trans        &sys_reset   &sys_reset   &trans        &trans        &trans  &studio_unlock
+                              &trans        &trans        &trans       &trans       &trans        &trans
             >;
         };
 
         layer_Mouse {
             display-name = "Mouse";
             bindings = <
-                &trans &trans &trans &trans &trans &trans &trans &kp PAGE_UP &kp PG_DN &trans
-                &trans &trans &trans &trans &trans &trans &mmv MOVE_LEFT &mmv MOVE_UP &mmv MOVE_DOWN &mmv MOVE_RIGHT
-                &trans &trans &trans &trans &trans &trans &mkp LCLK &mkp MCLK &mkp RCLK &trans
-                &trans &trans &trans &tog 5 &trans &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &trans          &kp PAGE_UP   &kp PG_DN       &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &mmv MOVE_LEFT  &mmv MOVE_UP  &mmv MOVE_DOWN  &mmv MOVE_RIGHT
+&trans  &trans  &trans  &trans  &trans  &trans  &mkp LCLK       &mkp MCLK     &mkp RCLK       &trans
+                &trans  &trans  &trans  &tog 5  &trans          &trans
             >;
         };
 
         layer_Macro {
             display-name = "Macro";
             bindings = <
-                &dm DM_SLOT_NVS 0 &dm DM_SLOT_NVS 1 &dm DM_SLOT_NVS 2 &dm DM_SLOT_NVS 3 &none &none &dm DM_SLOT_NVS 4 &dm DM_SLOT_NVS 5 &dm DM_SLOT_NVS 6 &dm DM_SLOT_NVS 7
-                &dm DM_SLOT_RAM 0 &dm DM_SLOT_RAM 1 &dm DM_SLOT_RAM 2 &dm DM_SLOT_RAM 3 &none &none &dm DM_SLOT_RAM 4 &dm DM_SLOT_RAM 5 &dm DM_SLOT_RAM 6 &dm DM_SLOT_RAM 7
-                &none &none &none &trans &dm DM_MOV &none &none &none &none &none
-                &dm DM_REC 0 &dm DM_STP 0 &dm DM_DEL 0 &dm DM_STATE 0 &tog MACRO &none
+&dm DM_SLOT_NVS 0  &dm DM_SLOT_NVS 1  &dm DM_SLOT_NVS 2  &dm DM_SLOT_NVS 3  &none         &none           &dm DM_SLOT_NVS 4  &dm DM_SLOT_NVS 5  &dm DM_SLOT_NVS 6  &dm DM_SLOT_NVS 7
+&dm DM_SLOT_RAM 0  &dm DM_SLOT_RAM 1  &dm DM_SLOT_RAM 2  &dm DM_SLOT_RAM 3  &none         &none           &dm DM_SLOT_RAM 4  &dm DM_SLOT_RAM 5  &dm DM_SLOT_RAM 6  &dm DM_SLOT_RAM 7
+&none              &none              &none              &trans             &dm DM_MOV    &none           &none              &none              &none              &none
+                                      &dm DM_REC 0       &dm DM_STP 0       &dm DM_DEL 0  &dm DM_STATE 0  &tog MACRO         &none
             >;
         };
     };
