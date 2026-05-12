@@ -479,11 +479,8 @@ text.br, use.br { fill: var(--color-sys); }
 <tspan x="0" dy="-0.6em">&amp;as</tspan><tspan x="0" dy="1.2em">MINUS</tspan>
 </text>
 </g>
-<g transform="translate(600, 28)" class="key keypos-9">
-<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
-<text x="0" y="1" class="key tap">
-<tspan x="0" dy="-0.6em">&amp;as</tspan><tspan x="0" dy="1.2em">EQUAL</tspan>
-</text>
+<g transform="translate(600, 28)" class="key trans keypos-9">
+<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key trans"/>
 </g>
 <g transform="translate(30, 84)" class="key keypos-10">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
@@ -527,8 +524,11 @@ text.br, use.br { fill: var(--color-sys); }
 <tspan x="0" dy="-0.6em">{</tspan><tspan x="0" dy="1.2em">[</tspan>
 </text>
 </g>
-<g transform="translate(600, 84)" class="key trans keypos-19">
-<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key trans"/>
+<g transform="translate(600, 84)" class="key keypos-19">
+<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
+<text x="0" y="1" class="key tap">
+<tspan x="0" dy="-0.6em">&amp;as</tspan><tspan x="0" dy="1.2em">EQUAL</tspan>
+</text>
 </g>
 <g transform="translate(30, 140)" class="key keypos-20">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
@@ -959,30 +959,26 @@ text.br, use.br { fill: var(--color-sys); }
 <g transform="translate(420, 84)" class="key keypos-16">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-0.3em">Mouse</tspan><tspan x="0" dy="1.2em">←</tspan>
+<tspan x="0" dy="-0.6em">Mouse</tspan><tspan x="0" dy="1.2em">←</tspan>
 </text>
-<text x="0" y="-22" class="key shifted"><tspan style="font-size: 88%">Scroll ←</tspan></text>
 </g>
 <g transform="translate(480, 84)" class="key keypos-17">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-0.3em">Mouse</tspan><tspan x="0" dy="1.2em">↑</tspan>
+<tspan x="0" dy="-0.6em">Mouse</tspan><tspan x="0" dy="1.2em">↑</tspan>
 </text>
-<text x="0" y="-22" class="key shifted"><tspan style="font-size: 88%">Scroll ↑</tspan></text>
 </g>
 <g transform="translate(540, 84)" class="key keypos-18">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-0.3em">Mouse</tspan><tspan x="0" dy="1.2em">↓</tspan>
+<tspan x="0" dy="-0.6em">Mouse</tspan><tspan x="0" dy="1.2em">↓</tspan>
 </text>
-<text x="0" y="-22" class="key shifted"><tspan style="font-size: 88%">Scroll ↓</tspan></text>
 </g>
 <g transform="translate(600, 84)" class="key keypos-19">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-0.3em">Mouse</tspan><tspan x="0" dy="1.2em">→</tspan>
+<tspan x="0" dy="-0.6em">Mouse</tspan><tspan x="0" dy="1.2em">→</tspan>
 </text>
-<text x="0" y="-22" class="key shifted"><tspan style="font-size: 88%">Scroll →</tspan></text>
 </g>
 <g transform="translate(30, 140)" class="key trans keypos-20">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key trans"/>
@@ -1052,25 +1048,25 @@ text.br, use.br { fill: var(--color-sys); }
 <g transform="translate(30, 28)" class="key keypos-0">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">0</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_NVS</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">0</tspan>
 </text>
 </g>
 <g transform="translate(90, 28)" class="key keypos-1">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">1</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_NVS</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">1</tspan>
 </text>
 </g>
 <g transform="translate(150, 28)" class="key keypos-2">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">2</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_NVS</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">2</tspan>
 </text>
 </g>
 <g transform="translate(210, 28)" class="key keypos-3">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">3</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_NVS</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">3</tspan>
 </text>
 </g>
 <g transform="translate(270, 28)" class="key held keypos-4">
@@ -1082,49 +1078,49 @@ text.br, use.br { fill: var(--color-sys); }
 <g transform="translate(420, 28)" class="key keypos-6">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">4</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_NVS</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">4</tspan>
 </text>
 </g>
 <g transform="translate(480, 28)" class="key keypos-7">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">5</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_NVS</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">5</tspan>
 </text>
 </g>
 <g transform="translate(540, 28)" class="key keypos-8">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">6</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_NVS</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">6</tspan>
 </text>
 </g>
 <g transform="translate(600, 28)" class="key keypos-9">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">7</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_NVS</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">7</tspan>
 </text>
 </g>
 <g transform="translate(30, 84)" class="key keypos-10">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">8</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_RAM</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">0</tspan>
 </text>
 </g>
 <g transform="translate(90, 84)" class="key keypos-11">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">9</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_RAM</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">1</tspan>
 </text>
 </g>
 <g transform="translate(150, 84)" class="key keypos-12">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">10</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_RAM</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">2</tspan>
 </text>
 </g>
 <g transform="translate(210, 84)" class="key keypos-13">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">11</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_RAM</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">3</tspan>
 </text>
 </g>
 <g transform="translate(270, 84)" class="key held keypos-14">
@@ -1136,25 +1132,25 @@ text.br, use.br { fill: var(--color-sys); }
 <g transform="translate(420, 84)" class="key keypos-16">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">12</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_RAM</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">4</tspan>
 </text>
 </g>
 <g transform="translate(480, 84)" class="key keypos-17">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">13</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_RAM</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">5</tspan>
 </text>
 </g>
 <g transform="translate(540, 84)" class="key keypos-18">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">14</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_RAM</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">6</tspan>
 </text>
 </g>
 <g transform="translate(600, 84)" class="key keypos-19">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
-<tspan x="0" dy="-1.2em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_SLOT</tspan><tspan x="0" dy="1.2em">15</tspan>
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_RAM</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">7</tspan>
 </text>
 </g>
 <g transform="translate(30, 140)" class="key keypos-20">
@@ -1166,11 +1162,14 @@ text.br, use.br { fill: var(--color-sys); }
 <g transform="translate(150, 140)" class="key keypos-22">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 </g>
-<g transform="translate(210, 140)" class="key keypos-23">
-<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
+<g transform="translate(210, 140)" class="key trans keypos-23">
+<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key trans"/>
 </g>
 <g transform="translate(270, 140)" class="key keypos-24">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
+<text x="0" y="1" class="key tap">
+<tspan x="0" dy="-0.6em">&amp;dm</tspan><tspan x="0" dy="1.2em">DM_MOV</tspan>
+</text>
 </g>
 <g transform="translate(360, 140)" class="key keypos-25">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
@@ -1387,9 +1386,9 @@ text.br, use.br { fill: var(--color-sys); }
 <text x="180" y="28" class="combo tap">MENU</text>
 </g>
 <g class="combo combopos-12">
-<rect rx="6" ry="6" x="586" y="43" width="28" height="26" class="combo"/>
-<text x="600" y="56" class="combo tap">
-<tspan x="600" dy="-0.6em" style="font-size: 64%">&amp;as</tspan><tspan x="600" dy="1.2em" style="font-size: 64%">SINGLE_QUO…</tspan>
+<rect rx="6" ry="6" x="526" y="43" width="28" height="26" class="combo"/>
+<text x="540" y="56" class="combo tap">
+<tspan x="540" dy="-0.6em" style="font-size: 64%">&amp;as</tspan><tspan x="540" dy="1.2em" style="font-size: 64%">SINGLE_QUO…</tspan>
 </text>
 </g>
 <g class="combo combopos-13">
@@ -1417,6 +1416,10 @@ text.br, use.br { fill: var(--color-sys); }
 </a><a href="#Macro">
 <text x="270" y="65" class="combo hold layer-activator">Macro</text>
 </a></g>
+<g class="combo combopos-17">
+<rect rx="6" ry="6" x="496" y="15" width="28" height="26" class="combo"/>
+<text x="510" y="28" class="combo tap">;</text>
+</g>
 </g>
 </g>
 <text x="640.0" y="1877.0" class="footer">urob/zmk-config</text></svg>
