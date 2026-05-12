@@ -559,7 +559,7 @@
             bindings = <
 &dm DM_SLOT_NVS 0  &dm DM_SLOT_NVS 1  &dm DM_SLOT_NVS 2  &dm DM_SLOT_NVS 3  &none         &none           &dm DM_SLOT_NVS 4  &dm DM_SLOT_NVS 5  &dm DM_SLOT_NVS 6  &dm DM_SLOT_NVS 7
 &dm DM_SLOT_RAM 0  &dm DM_SLOT_RAM 1  &dm DM_SLOT_RAM 2  &dm DM_SLOT_RAM 3  &none         &none           &dm DM_SLOT_RAM 4  &dm DM_SLOT_RAM 5  &dm DM_SLOT_RAM 6  &dm DM_SLOT_RAM 7
-&none              &none              &none              &kp QMARK          &dm DM_MOV    &none           &none              &none              &none              &none
+&none              &none              &none              &kp QMARK          &dm DM_MOV 0  &none           &none              &none              &none              &none
                                       &dm DM_REC 0       &dm DM_STP 0       &dm DM_DEL 0  &dm DM_STATE 0  &tog MACRO         &none
             >;
         };
