@@ -475,7 +475,7 @@
         };
 
         combo_semi {
-            bindings = <&kp SEMI>;
+            bindings = <&as SEMI>;
             key-positions = <7 8>;
             layers = <0 1>;
             require-prior-idle-ms = <150>;
@@ -507,10 +507,10 @@
         layer_SWP_GEN {
             display-name = "SWP_GEN";
             bindings = <
-                &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
-                &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
-                &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
-                &none &lt_spc 2 SPACE &magic_shift LEFT_SHIFT 0 &lt_bs_del FN 0 &lt_spc 2 SPACE &smart_num 5 0
+&as SEMI     &kp P        &kp U         &kp F            &kp J                      &kp B            &kp W            &kp R           &kp D        &kp Q
+&hml LGUI I  &hml LALT O  &hml LSHFT E  &hml LCTRL N     &kp Y                      &kp G            &hmr LCTRL T     &hmr RSHFT H    &hmr LALT S  &hmr LGUI A
+&as FSLH     &as DOT      &as COMMA     &kp L            &kp K                      &kp V            &kp C            &kp M           &kp X        &kp Z
+                          &none         &lt_spc 2 SPACE  &magic_shift LEFT_SHIFT 0  &lt_bs_del FN 0  &lt_spc 2 SPACE  &smart_num 5 0
             >;
         };
 
@@ -527,10 +527,10 @@
         layer_FN {
             display-name = "FN";
             bindings = <
-&kp F12        &kp F7        &kp F8         &kp F9         &trans  &trans             &kp K_SCROLL_UP   &kp PAGE_UP        &kp PAGE_DOWN     &kp END
-&hml LGUI F10  &hml LALT F1  &hml LSHFT F2  &hml LCTRL F3  &trans  &kp K_SCROLL_DOWN  &kp LEFT          &kp UP             &kp DOWN          &kp RIGHT
-&kp F11        &kp F4        &kp F5         &kp F6         &trans  &trans             &kp LC(LG(LEFT))  &kp LC(LG(RIGHT))  &kp LS(LG(LEFT))  &kp LS(LG(RIGHT))
-                             &trans         &trans         &trans  &trans             &trans            &trans
+&kp F12        &kp F7        &kp F8         &kp F9         &trans  &trans          &msc SCRL_UP      &kp PAGE_UP        &kp PAGE_DOWN     &kp END
+&hml LGUI F10  &hml LALT F1  &hml LSHFT F2  &hml LCTRL F3  &trans  &msc SCRL_DOWN  &kp LEFT          &kp UP             &kp DOWN          &kp RIGHT
+&kp F11        &kp F4        &kp F5         &kp F6         &trans  &trans          &kp LC(LG(LEFT))  &kp LC(LG(RIGHT))  &kp LS(LG(LEFT))  &kp LS(LG(RIGHT))
+                             &trans         &trans         &trans  &trans          &trans            &trans
             >;
         };
 
