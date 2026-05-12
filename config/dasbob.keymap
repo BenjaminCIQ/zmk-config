@@ -507,10 +507,10 @@
         layer_SWP_GEN {
             display-name = "SWP_GEN";
             bindings = <
-                &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
-                &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
-                &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
-                &none &lt_spc 2 SPACE &magic_shift LEFT_SHIFT 0 &lt_bs_del FN 0 &lt_spc 2 SPACE &smart_num 5 0
+&as SEMI     &kp P        &kp U         &kp F            &kp J                      &kp B            &kp W            &kp R           &kp D        &kp Q
+&hml LGUI I  &hml LALT O  &hml LSHFT E  &hml LCTRL N     &kp Y                      &kp G            &hmr LCTRL T     &hmr RSHFT H    &hmr LALT S  &hmr LGUI A
+&as FSLH     &as DOT      &as COMMA     &kp L            &kp K                      &kp V            &kp C            &kp M           &kp X        &kp Z
+                          &none         &lt_spc 2 SPACE  &magic_shift LEFT_SHIFT 0  &lt_bs_del FN 0  &lt_spc 2 SPACE  &smart_num 5 0
             >;
         };
 
@@ -559,7 +559,7 @@
             bindings = <
 &dm DM_SLOT_NVS 0  &dm DM_SLOT_NVS 1  &dm DM_SLOT_NVS 2  &dm DM_SLOT_NVS 3  &none         &none           &dm DM_SLOT_NVS 4  &dm DM_SLOT_NVS 5  &dm DM_SLOT_NVS 6  &dm DM_SLOT_NVS 7
 &dm DM_SLOT_RAM 0  &dm DM_SLOT_RAM 1  &dm DM_SLOT_RAM 2  &dm DM_SLOT_RAM 3  &none         &none           &dm DM_SLOT_RAM 4  &dm DM_SLOT_RAM 5  &dm DM_SLOT_RAM 6  &dm DM_SLOT_RAM 7
-&none              &none              &none              &trans             &dm DM_MOV    &none           &none              &none              &none              &none
+&none              &none              &none              &kp QMARK          &dm DM_MOV    &none           &none              &none              &none              &none
                                       &dm DM_REC 0       &dm DM_STP 0       &dm DM_DEL 0  &dm DM_STATE 0  &tog MACRO         &none
             >;
         };
