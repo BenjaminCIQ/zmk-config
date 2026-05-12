@@ -522,7 +522,7 @@ text.br, use.br { fill: var(--color-sys); }
 <g class="combo combopos-16">
 <rect rx="6" ry="6" x="256" y="43" width="28" height="26" class="combo"/>
 <text x="270" y="56" class="combo tap">Macro</text>
-<text x="270" y="65" class="combo hold">toggle</text>
+<text x="270" y="65" class="combo hold">Macro</text>
 </g>
 <g class="combo combopos-17">
 <rect rx="6" ry="6" x="496" y="15" width="28" height="26" class="combo"/>

@@ -1069,8 +1069,8 @@ text.br, use.br { fill: var(--color-sys); }
 <tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_NVS</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">3</tspan>
 </text>
 </g>
-<g transform="translate(270, 28)" class="key keypos-4">
-<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
+<g transform="translate(270, 28)" class="key held keypos-4">
+<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key held"/>
 </g>
 <g transform="translate(360, 28)" class="key keypos-5">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
@@ -1123,8 +1123,8 @@ text.br, use.br { fill: var(--color-sys); }
 <tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_SLOT_RAM</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">3</tspan>
 </text>
 </g>
-<g transform="translate(270, 84)" class="key keypos-14">
-<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
+<g transform="translate(270, 84)" class="key held keypos-14">
+<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key held"/>
 </g>
 <g transform="translate(360, 84)" class="key keypos-15">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
@@ -1414,8 +1414,9 @@ text.br, use.br { fill: var(--color-sys); }
 <rect rx="6" ry="6" x="256" y="43" width="28" height="26" class="combo"/>
 <a href="#Macro">
 <text x="270" y="56" class="combo tap layer-activator">Macro</text>
-</a><text x="270" y="65" class="combo hold">toggle</text>
-</g>
+</a><a href="#Macro">
+<text x="270" y="65" class="combo hold layer-activator">Macro</text>
+</a></g>
 <g class="combo combopos-17">
 <rect rx="6" ry="6" x="496" y="15" width="28" height="26" class="combo"/>
 <text x="510" y="28" class="combo tap">;</text>
