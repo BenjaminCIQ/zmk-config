@@ -508,23 +508,11 @@ text.br, use.br { fill: var(--color-sys); }
 </text>
 </g>
 <g class="combo combopos-14">
-<rect rx="6" ry="6" x="466" y="43" width="28" height="26" class="combo"/>
-<text x="480" y="56" class="combo tap">
-<tspan x="480" dy="-0.6em">SCROLL</tspan><tspan x="480" dy="1.2em">UP</tspan>
-</text>
-</g>
-<g class="combo combopos-15">
-<rect rx="6" ry="6" x="526" y="43" width="28" height="26" class="combo"/>
-<text x="540" y="56" class="combo tap">
-<tspan x="540" dy="-0.6em">SCROLL</tspan><tspan x="540" dy="1.2em">DOWN</tspan>
-</text>
-</g>
-<g class="combo combopos-16">
 <rect rx="6" ry="6" x="256" y="43" width="28" height="26" class="combo"/>
 <text x="270" y="56" class="combo tap">Macro</text>
 <text x="270" y="65" class="combo hold">Macro</text>
 </g>
-<g class="combo combopos-17">
+<g class="combo combopos-15">
 <rect rx="6" ry="6" x="496" y="15" width="28" height="26" class="combo"/>
 <text x="510" y="28" class="combo tap">
 <tspan x="510" dy="-0.6em">&amp;as</tspan><tspan x="510" dy="1.2em">SEMI</tspan>
