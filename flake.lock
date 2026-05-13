@@ -2,21 +2,40 @@
   "nodes": {
     "dts-linter": {
       "inputs": {
+        "dts-lsp-src": "dts-lsp-src",
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
-        "lastModified": 1777056627,
-        "narHash": "sha256-aZ4zBjjiu2S1dR0LWY9JeAvjnoUIMzZ63zTIaNKaWLY=",
+        "lastModified": 1778604011,
+        "narHash": "sha256-5dwVNweMfQPI/0kaLX18QqJ+cfwIpvOhlErUO693UrA=",
         "owner": "urob",
         "repo": "dts-linter",
-        "rev": "6221c5107bdad8ef3d3b6d1d94807d207e4c5e2e",
+        "rev": "81e2bc2adf8fcb9126a48cd7e955e22b470ccf95",
         "type": "github"
       },
       "original": {
         "owner": "urob",
         "ref": "zmk",
         "repo": "dts-linter",
+        "type": "github"
+      }
+    },
+    "dts-lsp-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1778598002,
+        "narHash": "sha256-ldB8EN59+1LNskeZAPYg83q99fMgK/iPEiW1KQpblxI=",
+        "owner": "urob",
+        "repo": "dts-lsp",
+        "rev": "c1fe01b819e3171f98660c21f8c5f58a413279d6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "urob",
+        "repo": "dts-lsp",
         "type": "github"
       }
     },
@@ -61,27 +80,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1776548001,
-        "narHash": "sha256-ZSK0NL4a1BwVbbTBoSnWgbJy9HeZFXLYQizjb2DPF24=",
+        "lastModified": 1778443072,
+        "narHash": "sha256-zi7/fsqM/kFdNuED//4WOCUtezGtKKqRNORjMvfwjnA=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "b12141ef619e0a9c1c84dc8c684040326f27cdcc",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1776169885,
-        "narHash": "sha256-l/iNYDZ4bGOAFQY2q8y5OAfBBtrDAaPuRQqWaFHVRXM=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "4bd9165a9165d7b5e33ae57f3eecbcb28fb231c9",
+        "rev": "da5ad661ba4e5ef59ba743f0d112cbc30e474f32",
         "type": "github"
       },
       "original": {
@@ -99,11 +102,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773553880,
-        "narHash": "sha256-wfvYZMO2NOGBw/DiYX50FFvr2pIS/hjJ9Bx0FD3LH5E=",
+        "lastModified": 1776715674,
+        "narHash": "sha256-Gs1VnEkCkkRZxJQAC/Dhz0Jbfi22mFXChbtNg9w/Ybg=",
         "owner": "pyproject-nix",
         "repo": "pyproject.nix",
-        "rev": "3799d59a6886bed706eed9d209d7fc9db8ae9040",
+        "rev": "69f57f27e52a87c54e28138a75ec741cd46663c9",
         "type": "github"
       },
       "original": {
@@ -115,7 +118,7 @@
     "root": {
       "inputs": {
         "dts-linter": "dts-linter",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "zephyr": "zephyr",
         "zephyr-nix": "zephyr-nix"
       }
@@ -186,15 +189,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1775714408,
-        "narHash": "sha256-/qtxC+7PLhWZAr2w573ih6iNhPc5QlZmhZ3fizZPW40=",
-        "owner": "urob",
+        "lastModified": 1776749325,
+        "narHash": "sha256-47rOEFMPsmLpeU1HJDZu9ufbE+RuJVIT48pPpjEzfkA=",
+        "owner": "nix-community",
         "repo": "zephyr-nix",
-        "rev": "566a240bec63b2c309185065f7651a7fa6a68b4f",
+        "rev": "6966fb1cbf2fdb494bea3062c5e8e7d44dd8ac9c",
         "type": "github"
       },
       "original": {
-        "owner": "urob",
+        "owner": "nix-community",
         "repo": "zephyr-nix",
         "type": "github"
       }
