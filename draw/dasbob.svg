@@ -234,17 +234,17 @@ text.br, use.br { fill: var(--color-sys); }
 </g>
 <g transform="translate(210, 196)" class="key keypos-31">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
-<text x="0" y="1" class="key tap">Spc</text>
+<text x="0" y="1" class="key tap">Bspc</text>
 <a href="#NUM">
 <text x="0" y="22" class="key hold layer-activator">NUM</text>
-</a></g>
-<g transform="translate(270, 196)" class="key keypos-32">
-<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
-<text x="0" y="1" class="key tap">Bspc</text>
-<a href="#FN">
-<text x="0" y="22" class="key hold layer-activator">FN</text>
 </a><text x="0" y="-22" class="key shifted">Del</text>
 </g>
+<g transform="translate(270, 196)" class="key keypos-32">
+<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
+<text x="0" y="1" class="key tap">Tab</text>
+<a href="#FN">
+<text x="0" y="22" class="key hold layer-activator">FN</text>
+</a></g>
 <g transform="translate(360, 196)" class="key keypos-33">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">Magic</text>
@@ -416,17 +416,17 @@ text.br, use.br { fill: var(--color-sys); }
 </g>
 <g transform="translate(360, 196)" class="key keypos-33">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
-<text x="0" y="1" class="key tap">Bspc</text>
+<text x="0" y="1" class="key tap">Tab</text>
 <a href="#FN">
 <text x="0" y="22" class="key hold layer-activator">FN</text>
-</a><text x="0" y="-22" class="key shifted">Del</text>
-</g>
+</a></g>
 <g transform="translate(420, 196)" class="key keypos-34">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
-<text x="0" y="1" class="key tap">Spc</text>
+<text x="0" y="1" class="key tap">Bspc</text>
 <a href="#NUM">
 <text x="0" y="22" class="key hold layer-activator">NUM</text>
-</a></g>
+</a><text x="0" y="-22" class="key shifted">Del</text>
+</g>
 <g transform="translate(480, 196)" class="key keypos-35">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">
