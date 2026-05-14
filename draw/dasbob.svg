@@ -227,10 +227,11 @@ text.br, use.br { fill: var(--color-sys); }
 </g>
 <g transform="translate(150, 196)" class="key keypos-30">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
-<text x="0" y="1" class="key tap">Smart</text>
-<a href="#Mouse">
-<text x="0" y="22" class="key hold layer-activator">Mouse</text>
-</a></g>
+<text x="0" y="1" class="key tap">
+<tspan x="0" dy="-0.9em">KP</tspan><tspan x="0" dy="1.2em">ENTER</tspan>
+</text>
+<text x="0" y="22" class="key hold">Ctrl</text>
+</g>
 <g transform="translate(210, 196)" class="key keypos-31">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
 <text x="0" y="1" class="key tap">Spc</text>
@@ -428,10 +429,11 @@ text.br, use.br { fill: var(--color-sys); }
 </a></g>
 <g transform="translate(480, 196)" class="key keypos-35">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
-<text x="0" y="1" class="key tap">Smart</text>
-<a href="#Mouse">
-<text x="0" y="22" class="key hold layer-activator">Mouse</text>
-</a></g>
+<text x="0" y="1" class="key tap">
+<tspan x="0" dy="-0.9em">KP</tspan><tspan x="0" dy="1.2em">ENTER</tspan>
+</text>
+<text x="0" y="22" class="key hold">Ctrl</text>
+</g>
 </g>
 </g>
 <g transform="translate(10, 468)" class="layer-NUM">
@@ -1022,8 +1024,8 @@ text.br, use.br { fill: var(--color-sys); }
 <g transform="translate(600, 140)" class="key trans keypos-29">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key trans"/>
 </g>
-<g transform="translate(150, 196)" class="key held keypos-30">
-<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key held"/>
+<g transform="translate(150, 196)" class="key trans keypos-30">
+<rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key trans"/>
 </g>
 <g transform="translate(210, 196)" class="key trans keypos-31">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key trans"/>
@@ -1374,12 +1376,12 @@ text.br, use.br { fill: var(--color-sys); }
 <text x="420" y="103" class="combo shifted">Del</text>
 </g>
 <g class="combo combopos-8">
-<rect rx="6" ry="6" x="166" y="71" width="28" height="26" class="combo"/>
-<text x="180" y="84" class="combo tap">Tab</text>
+<rect rx="6" ry="6" x="196" y="43" width="28" height="26" class="combo"/>
+<text x="210" y="56" class="combo tap">Tab</text>
 </g>
 <g class="combo combopos-9">
-<rect rx="6" ry="6" x="106" y="71" width="28" height="26" class="combo"/>
-<text x="120" y="84" class="combo tap">ENTER</text>
+<rect rx="6" ry="6" x="136" y="43" width="28" height="26" class="combo"/>
+<text x="150" y="56" class="combo tap">ENTER</text>
 </g>
 <g class="combo combopos-10">
 <rect rx="6" ry="6" x="166" y="15" width="28" height="26" class="combo"/>
