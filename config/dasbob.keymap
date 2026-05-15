@@ -257,8 +257,8 @@
             bindings = <&mo>, <&bs_del>;
 
             #binding-cells = <2>;
-            tapping-term-ms = <320>;
-            quick-tap-ms = <250>;
+            tapping-term-ms = <250>;
+            quick-tap-ms = <120>;
             flavor = "balanced";
         };
 
@@ -451,10 +451,10 @@
         layer_SWP_GEN {
             display-name = "SWP_GEN";
             bindings = <
-                &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
-                &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
-                &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
-                &none &lt_spc 2 SPACE &magic_shift 3 0 &lt FN TAB &lt_bs_del 2 0 &enter_ctrl LCTRL KP_ENTER
+&as SEMI     &kp P        &kp U         &kp F            &kp J             &kp B       &kp W           &kp R                       &kp D        &kp Q
+&hml LGUI I  &hml LALT O  &hml LSHFT E  &hml LCTRL N     &kp Y             &kp G       &hmr LCTRL T    &hmr RSHFT H                &hmr LALT S  &hmr LGUI A
+&as FSLH     &as DOT      &as COMMA     &kp L            &kp K             &kp V       &kp C           &kp M                       &kp X        &kp Z
+                          &none         &lt_spc 2 SPACE  &magic_shift 3 0  &lt FN TAB  &lt_bs_del 2 0  &enter_ctrl LCTRL KP_ENTER
             >;
         };
 
