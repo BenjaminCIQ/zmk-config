@@ -190,7 +190,7 @@
 
         magic_shift: magic_shift {
             compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <1>;
+            #binding-cells = <2>;
             bindings = <&magic_shift_hold>, <&magic_shift_tap>;
 
             flavor = "balanced";
@@ -475,7 +475,7 @@
 &kp Q        &kp D        &kp R                       &kp W           &kp B           &kp J             &kp F            &kp U              &kp P        &as SEMI
 &hml LGUI A  &hml LALT S  &hml LSHFT H                &hml LCTRL T    &kp G           &kp Y             &hmr LCTRL N     &hmr RSHFT E       &hmr LALT O  &hmr LGUI I
 &kp Z        &kp X        &kp M                       &kp C           &kp V           &kp K             &kp L            &as COMMA          &as DOT      &as FSLH
-                          &enter_ctrl LCTRL KP_ENTER  &lt_bs_del 2 0  &lt_dm_nvs 3 6  &magic_shift 3    &lt_spc 2 SPACE  &dm DM_SLOT_NVS 7
+                          &enter_ctrl LCTRL KP_ENTER  &lt_bs_del 2 0  &lt_dm_nvs 3 6  &magic_shift 3 0  &lt_spc 2 SPACE  &dm DM_SLOT_NVS 7
             >;
         };
 
