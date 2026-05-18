@@ -201,8 +201,7 @@
         magic_shift_tap: magic_shift_tap {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
-            bindings = <&cancel_then_sticky_shift>, <&caps_word>;
-
+            bindings = <&sk LSHFT>, <&caps_word>;
             mods = <(MOD_LSFT)>;
         };
 
@@ -486,7 +485,7 @@
                 &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
                 &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
                 &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
-                &dm DM_SLOT_NVS 7 &lt_spc 2 SPACE &magic_shift 3 &lt_dm_nvs 3 6 &lt_bs_del 2 0 &enter_ctrl LCTRL KP_ENTER
+                &dm DM_SLOT_NVS 7 &lt_spc 2 SPACE &magic_shift 3 0 &lt_dm_nvs 3 6 &lt_bs_del 2 0 &enter_ctrl LCTRL KP_ENTER
             >;
         };
 
