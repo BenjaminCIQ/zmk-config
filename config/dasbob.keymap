@@ -207,10 +207,18 @@
             quick-tap-ms = <200>;
         };
 
+        dm_nvs_play: dm_nvs_play {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&macro_param_1to2 &dm DM_SLOT_NVS MACRO_PLACEHOLDER>;
+        };
+
         lt_dm_nvs: lt_dm_nvs {
             compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <3>;
-            bindings = <&mo>, <&dm>;
+            #binding-cells = <2>;
+            bindings = <&mo>, <&dm_nvs_play>;
 
             flavor = "balanced";
             tapping-term-ms = <250>;
@@ -451,7 +459,7 @@
 &kp Q        &kp D        &kp R                       &kp W           &kp B       &kp J             &kp F            &kp U         &kp P        &as SEMI
 &hml LGUI A  &hml LALT S  &hml LSHFT H                &hml LCTRL T    &kp G       &kp Y             &hmr LCTRL N     &hmr RSHFT E  &hmr LALT O  &hmr LGUI I
 &kp Z        &kp X        &kp M                       &kp C           &kp V       &kp K             &kp L            &as COMMA     &as DOT      &as FSLH
-                          &enter_ctrl LCTRL KP_ENTER  &lt_dm_nvs 2 DM_SLOT_NVS 6   &lt FN TAB  &magic_shift 3 0  &lt_spc 2 SPACE  &dm DM_SLOT_NVS 7
+                          &enter_ctrl LCTRL KP_ENTER  &lt_spc 2 SPACE &lt_dm_nvs 2 6   &lt FN TAB  &magic_shift 3 0  &lt_spc 2 SPACE  &dm DM_SLOT_NVS 7
             >;
         };
 
