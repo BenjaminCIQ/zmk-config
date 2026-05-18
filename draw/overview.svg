@@ -518,6 +518,10 @@ text.br, use.br { fill: var(--color-sys); }
 <tspan x="150" dy="-0.6em">Ctl+Sft</tspan><tspan x="150" dy="1.2em">+C</tspan>
 </text>
 </g>
+<g class="combo combopos-14">
+<rect rx="6" ry="6" x="226" y="71" width="28" height="26" class="combo"/>
+<text x="240" y="84" class="combo tap">Spc</text>
+</g>
 </g>
 </g>
 <text x="640.0" y="473.0" class="footer">urob/zmk-config</text></svg>
