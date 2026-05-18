@@ -176,7 +176,7 @@
         cancel_then_sticky_shift: cancel_then_sticky_shift {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_tap &kp K_CANCEL &sk LSHFT>;
+            bindings = <&macro_tap>, <&kp K_CANCEL &sk LSHFT>;
         };
 
         magic_shift: magic_shift {
@@ -456,20 +456,20 @@
         layer_Base {
             display-name = "Base";
             bindings = <
-&kp Q        &kp D        &kp R                       &kp W           &kp B       &kp J             &kp F            &kp U         &kp P        &as SEMI
-&hml LGUI A  &hml LALT S  &hml LSHFT H                &hml LCTRL T    &kp G       &kp Y             &hmr LCTRL N     &hmr RSHFT E  &hmr LALT O  &hmr LGUI I
-&kp Z        &kp X        &kp M                       &kp C           &kp V       &kp K             &kp L            &as COMMA     &as DOT      &as FSLH
-                          &enter_ctrl LCTRL KP_ENTER  &lt_spc 2 SPACE &lt_dm_nvs 2 6 &magic_shift 3 0 &lt_spc 2 SPACE &dm DM_SLOT_NVS 7
+&kp Q        &kp D        &kp R                       &kp W           &kp B           &kp J             &kp F            &kp U              &kp P        &as SEMI
+&hml LGUI A  &hml LALT S  &hml LSHFT H                &hml LCTRL T    &kp G           &kp Y             &hmr LCTRL N     &hmr RSHFT E       &hmr LALT O  &hmr LGUI I
+&kp Z        &kp X        &kp M                       &kp C           &kp V           &kp K             &kp L            &as COMMA          &as DOT      &as FSLH
+                          &enter_ctrl LCTRL KP_ENTER  &lt_bs_del 2 0  &lt_dm_nvs 3 6  &magic_shift 3 0  &lt_spc 2 SPACE  &dm DM_SLOT_NVS 7
             >;
         };
 
         layer_SWP_GEN {
             display-name = "SWP_GEN";
             bindings = <
-                &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
-                &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
-                &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
-                &dm DM_SLOT_NVS 7 &lt_spc 2 SPACE &magic_shift 3 0 &lt_dm_nvs 2 6 &lt_spc 2 SPACE &enter_ctrl LCTRL KP_ENTER
+&as SEMI     &kp P        &kp U              &kp F            &kp J             &kp B           &kp W            &kp R                       &kp D        &kp Q
+&hml LGUI I  &hml LALT O  &hml LSHFT E       &hml LCTRL N     &kp Y             &kp G           &hmr LCTRL T     &hmr RSHFT H                &hmr LALT S  &hmr LGUI A
+&as FSLH     &as DOT      &as COMMA          &kp L            &kp K             &kp V           &kp C            &kp M                       &kp X        &kp Z
+                          &dm DM_SLOT_NVS 7  &lt_spc 2 SPACE  &magic_shift 3 0  &lt_dm_nvs 2 6  &lt_spc 2 SPACE  &enter_ctrl LCTRL KP_ENTER
             >;
         };
 
