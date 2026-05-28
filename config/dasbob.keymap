@@ -663,10 +663,10 @@
         };
 
         layer_FN {
-            display-name = "FN";
+            display-name = "Nav";
             bindings = <
-&kp F12        &kp F7        &kp F8         &kp F9         &trans  &trans          &msc SCRL_UP      &kp PAGE_UP        &kp PAGE_DOWN     &kp END
-&hml LGUI F10  &hml LALT F1  &hml LSHFT F2  &hml LCTRL F3  &trans  &msc SCRL_DOWN  &kp LEFT          &kp UP             &kp DOWN          &kp RIGHT
+&kp F12        &kp F7        &kp F8         &kp F9         &trans  &kp PAGE_UP     &msc SCRL_UP      &kp UP             &kp PAGE_DOWN     &kp END
+&hml LGUI F10  &hml LALT F1  &hml LSHFT F2  &hml LCTRL F3  &trans  &kp PG_DN       &msc SCRL_DOWN  &kp LEFT           &kp DOWN           &kp RIGHT
 &kp F11        &kp F4        &kp F5         &kp F6         &trans  &trans          &kp LC(LG(LEFT))  &kp LC(LG(RIGHT))  &kp LS(LG(LEFT))  &kp LS(LG(RIGHT))
                              &trans         &trans         &trans  &trans          &trans            &trans
             >;
@@ -685,8 +685,8 @@
         layer_Mouse {
             display-name = "Mouse";
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans  &trans          &kp PAGE_UP   &kp PG_DN       &trans
-&trans  &trans  &trans  &trans  &trans  &trans  &mmv MOVE_LEFT  &mmv MOVE_UP  &mmv MOVE_DOWN  &mmv MOVE_RIGHT
+&trans  &trans  &trans  &trans  &trans  &trans  &kp PAGE_UP     &mmv MOVE_UP    &kp PG_DN       &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_RIGHT  &trans
 &trans  &trans  &trans  &trans  &trans  &trans  &mkp LCLK       &mkp MCLK     &mkp RCLK       &trans
                 &trans  &trans  &trans  &tog MOUSE  &trans          &trans
             >;
