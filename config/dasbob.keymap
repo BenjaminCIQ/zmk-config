@@ -1,5 +1,4 @@
 #include <behaviors/num_word.dtsi>
-#include <behaviors/unicode.dtsi>
 
 /* Mouse settings - must be before pointing.h */
 
@@ -93,8 +92,6 @@
 /* numword continue-list override - add UNDER for snake_case */
 
 &num_word { continue-list = <BACKSPACE DELETE DOT COMMA PLUS MINUS STAR FSLH EQUAL UNDER>; };
-
-&uc { default-mode = <UC_MODE_WIN_COMPOSE>; };
 
 / {
     behaviors {
@@ -245,6 +242,27 @@
             keep-mods = <MOD_RSFT>;
         };
 
+        de_ae_morph: de_ae_morph {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&win_de_ae>, <&win_de_AE>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        de_oe_morph: de_oe_morph {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&win_de_oe>, <&win_de_OE>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        de_ue_morph: de_ue_morph {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&win_de_ue>, <&win_de_UE>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
         leader_sft: leader_sft {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -257,22 +275,22 @@
             ignore-keys = <LSHFT RSHFT>;
 
             leader_sequence_de_ae {
-                bindings = <&uc UC_DE_AE>;
+                bindings = <&de_ae_morph>;
                 sequence = <A>;
             };
 
             leader_sequence_de_oe {
-                bindings = <&uc UC_DE_OE>;
+                bindings = <&de_oe_morph>;
                 sequence = <O>;
             };
 
             leader_sequence_de_ue {
-                bindings = <&uc UC_DE_UE>;
+                bindings = <&de_ue_morph>;
                 sequence = <U>;
             };
 
             leader_sequence_de_eszett {
-                bindings = <&uc UC_DE_SS>;
+                bindings = <&win_de_ss>;
                 sequence = <S>;
             };
         };
@@ -333,6 +351,92 @@
                 <&macro_pause_for_release>,
                 <&macro_release>,
                 <&macro_param_1to1 &macro_param_1to2 &as_ht MACRO_PLACEHOLDER MACRO_PLACEHOLDER>;
+        };
+
+        /* Windows Alt+numpad codes for German umlauts */
+
+        win_de_ae: win_de_ae {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            label = "WIN_DE_AE";
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings =
+                <&macro_press &kp LALT>,
+                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N2 &kp KP_N8>,
+                <&macro_release &kp LALT>;
+        };
+
+        win_de_oe: win_de_oe {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            label = "WIN_DE_OE";
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings =
+                <&macro_press &kp LALT>,
+                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N4 &kp KP_N6>,
+                <&macro_release &kp LALT>;
+        };
+
+        win_de_ue: win_de_ue {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            label = "WIN_DE_UE";
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings =
+                <&macro_press &kp LALT>,
+                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N5 &kp KP_N2>,
+                <&macro_release &kp LALT>;
+        };
+
+        win_de_ss: win_de_ss {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            label = "WIN_DE_SS";
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings =
+                <&macro_press &kp LALT>,
+                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N2 &kp KP_N3>,
+                <&macro_release &kp LALT>;
+        };
+
+        win_de_AE: win_de_AE {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            label = "WIN_DE_CAP_AE";
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings =
+                <&macro_press &kp LALT>,
+                <&macro_tap &kp KP_N0 &kp KP_N1 &kp KP_N9 &kp KP_N6>,
+                <&macro_release &kp LALT>;
+        };
+
+        win_de_OE: win_de_OE {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            label = "WIN_DE_CAP_OE";
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings =
+                <&macro_press &kp LALT>,
+                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N1 &kp KP_N4>,
+                <&macro_release &kp LALT>;
+        };
+
+        win_de_UE: win_de_UE {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            label = "WIN_DE_CAP_UE";
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings =
+                <&macro_press &kp LALT>,
+                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N2 &kp KP_N0>,
+                <&macro_release &kp LALT>;
         };
     };
 
