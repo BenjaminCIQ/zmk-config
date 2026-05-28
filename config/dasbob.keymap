@@ -58,9 +58,14 @@
     delay-ms = <0>;
 };
 
+/* Pointer sensitivity overrides (trackpad / trackball via input-listeners).
+ * warp: faster cursor/scroll when the layer is active.
+ * precision: slower cursor/scroll for fine control.
+ * urob uses NAV + FN; on Dasbob that maps to FN (Nav) + NUM (sym). */
+
 &mmv_input_listener {
     warp {
-        layers = <SWAP_HANDS_GEN>;
+        layers = <FN MOUSE>;
         input-processors = <&zip_xy_scaler 3 1>;
     };
 
@@ -72,7 +77,7 @@
 
 &msc_input_listener {
     warp {
-        layers = <SWAP_HANDS_GEN>;
+        layers = <FN MOUSE>;
         input-processors = <&zip_scroll_scaler 2 1>;
     };
 
