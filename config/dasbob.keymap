@@ -262,21 +262,21 @@
         de_ae_morph: de_ae_morph {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
-            bindings = <&win_de_ae>, <&win_de_AE>;
+            bindings = <&win_de_ae>, <&win_de_cap_ae>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
         de_oe_morph: de_oe_morph {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
-            bindings = <&win_de_oe>, <&win_de_OE>;
+            bindings = <&win_de_oe>, <&win_de_cap_oe>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
         de_ue_morph: de_ue_morph {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
-            bindings = <&win_de_ue>, <&win_de_UE>;
+            bindings = <&win_de_ue>, <&win_de_cap_ue>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
@@ -426,7 +426,7 @@
                 <&macro_release &kp LALT>;
         };
 
-        win_de_AE: win_de_AE {
+        win_de_cap_ae: win_de_cap_ae {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             label = "WIN_DE_CAP_AE";
@@ -438,7 +438,7 @@
                 <&macro_release &kp LALT>;
         };
 
-        win_de_OE: win_de_OE {
+        win_de_cap_oe: win_de_cap_oe {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             label = "WIN_DE_CAP_OE";
@@ -450,7 +450,7 @@
                 <&macro_release &kp LALT>;
         };
 
-        win_de_UE: win_de_UE {
+        win_de_cap_ue: win_de_cap_ue {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             label = "WIN_DE_CAP_UE";
