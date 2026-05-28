@@ -27,8 +27,10 @@ Ported from urob's config:
 - Conditional layers
 
 Dasbob-specific:
-- Workman alpha layout
-- Autoshift on punctuation (;,./\)
+- Workman alpha layout (Base) with Graphite and QWERTY overlays (mutually exclusive toggles on Sys)
+- Autoshift on punctuation (;,./\) on Base/QWERTY; Graphite uses `as_pair` for layout-specific tap/hold symbols
+- Comma/question on NUM layer pos 25 (below apostrophe column)
+- Inner thumbs: space on LH1 (31), backspace/del on RH1 (34)
 - UNDER added to numword continue-list
 
 ## Upstream Sync Workflow
