@@ -24,6 +24,7 @@
 #define SYS 6
 #define MOUSE 7
 #define MACRO 8
+#define LAYERS_TYPING BASE SWAP_HANDS_GEN GRAPHITE QWERTY NUM
 #define KEYS_L 0 1 2 3 4 10 11 12 13 14 20 21 22 23 24
 #define KEYS_R 5 6 7 8 9 15 16 17 18 19 25 26 27 28 29
 #define THUMBS 30 31 32 33 34 35
@@ -59,24 +60,24 @@
 
 &mmv_input_listener {
     warp {
-        layers = <1>;
+        layers = <SWAP_HANDS_GEN>;
         input-processors = <&zip_xy_scaler 3 1>;
     };
 
     precision {
-        layers = <4>;
+        layers = <NUM>;
         input-processors = <&zip_xy_scaler 1 2>;
     };
 };
 
 &msc_input_listener {
     warp {
-        layers = <1>;
+        layers = <SWAP_HANDS_GEN>;
         input-processors = <&zip_scroll_scaler 2 1>;
     };
 
     precision {
-        layers = <4>;
+        layers = <NUM>;
         input-processors = <&zip_scroll_scaler 1 2>;
     };
 };
@@ -481,7 +482,7 @@
         combo_esc {
             bindings = <&kp ESC>;
             key-positions = <10 11>;
-            layers = <0 1 2 3 4>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -489,7 +490,7 @@
         combo_mouse {
             bindings = <&tog MOUSE>;
             key-positions = <5 15>;
-            layers = <0 1 2 3 4>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -497,7 +498,7 @@
         combo_alt_tab {
             bindings = <&hml LS(LALT)TAB>;
             key-positions = <11 1>;
-            layers = <0 1 2 3 4>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -505,7 +506,7 @@
         combo_ldr {
             bindings = <&leader>;
             key-positions = <6 16>;
-            layers = <0 2 3>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -513,7 +514,7 @@
         combo_cut {
             bindings = <&kp LC(X)>;
             key-positions = <21 23>;
-            layers = <0 1 2 3 4>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -521,7 +522,7 @@
         combo_copy {
             bindings = <&kp LC(C)>;
             key-positions = <22 21>;
-            layers = <0 1 2 3 4>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -529,7 +530,7 @@
         combo_paste {
             bindings = <&kp LC(V)>;
             key-positions = <23 22>;
-            layers = <0 1 2 3 4>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -537,7 +538,7 @@
         combo_bspc {
             bindings = <&bs_del>;
             key-positions = <26 16>;
-            layers = <0 1 3 4>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -545,7 +546,7 @@
         tab {
             bindings = <&kp TAB>;
             key-positions = <13 3>;
-            layers = <0 2 3>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -553,7 +554,7 @@
         enter {
             bindings = <&kp ENTER>;
             key-positions = <12 2>;
-            layers = <0 2 3>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -561,7 +562,7 @@
         menu {
             bindings = <&kp C_MENU>;
             key-positions = <3 2>;
-            layers = <0 2 3>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -569,7 +570,7 @@
         backslash_pipe {
             bindings = <&as BACKSLASH>;
             key-positions = <19 29>;
-            layers = <0 2 3>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -577,7 +578,7 @@
         combo_to_makro_layer {
             bindings = <&sticky_toggle MACRO MACRO>;
             key-positions = <4 14>;
-            layers = <0 2 3>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -585,7 +586,7 @@
         combo_shift_copy {
             bindings = <&kp LC(LS(C))>;
             key-positions = <23 22 21>;
-            layers = <0 1 2 3 4>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -593,7 +594,7 @@
         combo_space {
             bindings = <&kp SPACE>;
             key-positions = <13 14>;
-            layers = <0 1 2 3 4>;
+            layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
         };
@@ -675,7 +676,7 @@
             display-name = "Sys";
             bindings = <
 &bt BT_SEL 0    &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_CLR   &trans       &out OUT_USB  &out OUT_BLE  &trans  &trans
-&trans          &trans        &base_only    &tog 1        &bootloader  &bootloader  &tog 1        &tog_graphite_ex  &trans  &tog_qwerty_ex
+&trans          &trans        &base_only    &tog SWAP_HANDS_GEN  &bootloader  &bootloader  &tog SWAP_HANDS_GEN  &tog_graphite_ex  &trans  &tog_qwerty_ex
 &studio_unlock  &trans        &trans        &trans        &sys_reset   &sys_reset   &trans        &trans        &trans  &studio_unlock
                               &trans        &trans        &trans       &trans       &trans        &trans
             >;
