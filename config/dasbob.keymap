@@ -342,6 +342,12 @@
             quick-tap-ms = <120>;
             require-prior-idle-ms = <100>;
         };
+
+        tog_off: tog_off {
+            compatible = "zmk,behavior-toggle-layer";
+            #binding-cells = <1>;
+            toggle-mode = "off";
+        };
     };
 
     macros {
@@ -460,7 +466,7 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings =
-                <&macro_tap &lc QWERTY>,
+                <&macro_tap &tog_off QWERTY>,
                 <&macro_tap &tog GRAPHITE>;
         };
 
@@ -468,7 +474,7 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings =
-                <&macro_tap &lc GRAPHITE>,
+                <&macro_tap &tog_off GRAPHITE>,
                 <&macro_tap &tog QWERTY>;
         };
 
@@ -476,8 +482,8 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings =
-                <&macro_tap &lc GRAPHITE>,
-                <&macro_tap &lc QWERTY>;
+                <&macro_tap &tog_off GRAPHITE>,
+                <&macro_tap &tog_off QWERTY>;
         };
     };
 
