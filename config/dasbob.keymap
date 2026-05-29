@@ -263,6 +263,7 @@
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
             bindings = <&win_de_ae>, <&win_de_cap_ae>;
+
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
@@ -270,6 +271,7 @@
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
             bindings = <&win_de_oe>, <&win_de_cap_oe>;
+
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
@@ -277,6 +279,7 @@
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
             bindings = <&win_de_ue>, <&win_de_cap_ue>;
+
             mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
@@ -385,9 +388,12 @@
             wait-ms = <40>;
             tap-ms = <40>;
             bindings =
-                <&macro_press &kp LALT>,
-                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N2 &kp KP_N8>,
-                <&macro_release &kp LALT>;
+                <&macro_press>,
+                <&kp LALT>,
+                <&macro_tap>,
+                <&kp KP_N0 &kp KP_N2 &kp KP_N2 &kp KP_N8>,
+                <&macro_release>,
+                <&kp LALT>;
         };
 
         win_de_oe: win_de_oe {
@@ -397,9 +403,12 @@
             wait-ms = <40>;
             tap-ms = <40>;
             bindings =
-                <&macro_press &kp LALT>,
-                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N4 &kp KP_N6>,
-                <&macro_release &kp LALT>;
+                <&macro_press>,
+                <&kp LALT>,
+                <&macro_tap>,
+                <&kp KP_N0 &kp KP_N2 &kp KP_N4 &kp KP_N6>,
+                <&macro_release>,
+                <&kp LALT>;
         };
 
         win_de_ue: win_de_ue {
@@ -409,9 +418,12 @@
             wait-ms = <40>;
             tap-ms = <40>;
             bindings =
-                <&macro_press &kp LALT>,
-                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N5 &kp KP_N2>,
-                <&macro_release &kp LALT>;
+                <&macro_press>,
+                <&kp LALT>,
+                <&macro_tap>,
+                <&kp KP_N0 &kp KP_N2 &kp KP_N5 &kp KP_N2>,
+                <&macro_release>,
+                <&kp LALT>;
         };
 
         win_de_ss: win_de_ss {
@@ -421,9 +433,12 @@
             wait-ms = <40>;
             tap-ms = <40>;
             bindings =
-                <&macro_press &kp LALT>,
-                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N2 &kp KP_N3>,
-                <&macro_release &kp LALT>;
+                <&macro_press>,
+                <&kp LALT>,
+                <&macro_tap>,
+                <&kp KP_N0 &kp KP_N2 &kp KP_N2 &kp KP_N3>,
+                <&macro_release>,
+                <&kp LALT>;
         };
 
         win_de_cap_ae: win_de_cap_ae {
@@ -433,9 +448,12 @@
             wait-ms = <40>;
             tap-ms = <40>;
             bindings =
-                <&macro_press &kp LALT>,
-                <&macro_tap &kp KP_N0 &kp KP_N1 &kp KP_N9 &kp KP_N6>,
-                <&macro_release &kp LALT>;
+                <&macro_press>,
+                <&kp LALT>,
+                <&macro_tap>,
+                <&kp KP_N0 &kp KP_N1 &kp KP_N9 &kp KP_N6>,
+                <&macro_release>,
+                <&kp LALT>;
         };
 
         win_de_cap_oe: win_de_cap_oe {
@@ -445,9 +463,12 @@
             wait-ms = <40>;
             tap-ms = <40>;
             bindings =
-                <&macro_press &kp LALT>,
-                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N1 &kp KP_N4>,
-                <&macro_release &kp LALT>;
+                <&macro_press>,
+                <&kp LALT>,
+                <&macro_tap>,
+                <&kp KP_N0 &kp KP_N2 &kp KP_N1 &kp KP_N4>,
+                <&macro_release>,
+                <&kp LALT>;
         };
 
         win_de_cap_ue: win_de_cap_ue {
@@ -457,33 +478,42 @@
             wait-ms = <40>;
             tap-ms = <40>;
             bindings =
-                <&macro_press &kp LALT>,
-                <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N2 &kp KP_N0>,
-                <&macro_release &kp LALT>;
+                <&macro_press>,
+                <&kp LALT>,
+                <&macro_tap>,
+                <&kp KP_N0 &kp KP_N2 &kp KP_N2 &kp KP_N0>,
+                <&macro_release>,
+                <&kp LALT>;
         };
 
         tog_graphite_ex: tog_graphite_ex {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings =
-                <&macro_tap &tog_off QWERTY>,
-                <&macro_tap &tog GRAPHITE>;
+                <&macro_tap>,
+                <&tog_off QWERTY>,
+                <&macro_tap>,
+                <&tog GRAPHITE>;
         };
 
         tog_qwerty_ex: tog_qwerty_ex {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings =
-                <&macro_tap &tog_off GRAPHITE>,
-                <&macro_tap &tog QWERTY>;
+                <&macro_tap>,
+                <&tog_off GRAPHITE>,
+                <&macro_tap>,
+                <&tog QWERTY>;
         };
 
         base_only: base_only {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings =
-                <&macro_tap &tog_off GRAPHITE>,
-                <&macro_tap &tog_off QWERTY>;
+                <&macro_tap>,
+                <&tog_off GRAPHITE>,
+                <&macro_tap>,
+                <&tog_off QWERTY>;
         };
     };
 
@@ -626,9 +656,9 @@
         layer_Base {
             display-name = "Base";
             bindings = <
-&kp Q        &kp D        &kp R                       &kp W           &kp B           &kp J             &kp F            &kp U              &kp P        &as SEMI
-&hml LGUI A  &hml LALT S  &hml LSHFT H                &hml LCTRL T    &kp G           &kp Y             &hmr LCTRL N     &hmr RSHFT E       &hmr LALT O  &hmr LGUI I
-&kp Z        &kp X        &kp M                       &kp C           &kp V           &kp K             &kp L            &as COMMA          &as DOT      &as FSLH
+&kp Q        &kp D        &kp R                       &kp W              &kp B            &kp J              &kp F             &kp U              &kp P        &as SEMI
+&hml LGUI A  &hml LALT S  &hml LSHFT H                &hml LCTRL T       &kp G            &kp Y              &hmr LCTRL N      &hmr RSHFT E       &hmr LALT O  &hmr LGUI I
+&kp Z        &kp X        &kp M                       &kp C              &kp V            &kp K              &kp L             &as COMMA          &as DOT      &as FSLH
                           &enter_ctrl LCTRL KP_ENTER  &lt_spc NUM SPACE  &lt_dm_nvs FN 6  &magic_shift FN 0  &lt_bs_del NUM 0  &dm DM_SLOT_NVS 7
             >;
         };
@@ -636,29 +666,29 @@
         layer_SWP_GEN {
             display-name = "SWP_GEN";
             bindings = <
-                &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
-                &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
-                &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
-                &dm DM_SLOT_NVS 7 &lt_bs_del NUM 0 &magic_shift FN 0 &lt_dm_nvs FN 6 &lt_spc NUM SPACE &enter_ctrl LCTRL KP_ENTER
+&as SEMI     &kp P        &kp U              &kp F             &kp J              &kp B            &kp W              &kp R                       &kp D        &kp Q
+&hml LGUI I  &hml LALT O  &hml LSHFT E       &hml LCTRL N      &kp Y              &kp G            &hmr LCTRL T       &hmr RSHFT H                &hmr LALT S  &hmr LGUI A
+&as FSLH     &as DOT      &as COMMA          &kp L             &kp K              &kp V            &kp C              &kp M                       &kp X        &kp Z
+                          &dm DM_SLOT_NVS 7  &lt_bs_del NUM 0  &magic_shift FN 0  &lt_dm_nvs FN 6  &lt_spc NUM SPACE  &enter_ctrl LCTRL KP_ENTER
             >;
         };
 
         layer_Graphite {
             display-name = "Graphite";
             bindings = <
-&kp B        &kp L        &kp D                       &kp W           &kp Z           &as_pair UNDER SINGLE_QUOTE  &kp F            &kp O              &kp U        &kp J
-&hml LGUI N  &hml LALT R  &hml LSHFT T                &hml LCTRL S    &kp G           &kp Y             &hmr LCTRL H     &hmr RSHFT A       &hmr LALT E  &hmr LGUI I
-&kp Q        &kp X        &kp M                       &kp C           &kp V           &kp K             &kp P            &as_pair GREATER_THAN DOT  &as_pair DOUBLE_QUOTES MINUS  &as_pair LESS_THAN FSLH
-                          &enter_ctrl LCTRL KP_ENTER  &lt_spc NUM SPACE  &lt_dm_nvs FN 6  &magic_shift FN 0  &lt_bs_del NUM 0  &dm DM_SLOT_NVS 7
+&kp B        &kp L        &kp D                       &kp W              &kp Z            &as_pair UNDER SINGLE_QUOTE  &kp F             &kp O                      &kp U                         &kp J
+&hml LGUI N  &hml LALT R  &hml LSHFT T                &hml LCTRL S       &kp G            &kp Y                        &hmr LCTRL H      &hmr RSHFT A               &hmr LALT E                   &hmr LGUI I
+&kp Q        &kp X        &kp M                       &kp C              &kp V            &kp K                        &kp P             &as_pair GREATER_THAN DOT  &as_pair DOUBLE_QUOTES MINUS  &as_pair LESS_THAN FSLH
+                          &enter_ctrl LCTRL KP_ENTER  &lt_spc NUM SPACE  &lt_dm_nvs FN 6  &magic_shift FN 0            &lt_bs_del NUM 0  &dm DM_SLOT_NVS 7
             >;
         };
 
         layer_QWERTY {
             display-name = "QWERTY";
             bindings = <
-&kp Q        &kp W        &kp E                       &kp R           &kp T           &kp Y             &kp U            &kp I              &kp O        &kp P
-&hml LGUI A  &hml LALT S  &hml LSHFT D                &hml LCTRL F    &kp G           &kp H             &hmr LCTRL J     &hmr RSHFT K       &hmr LALT L  &hmr LGUI SEMI
-&kp Z        &kp X        &kp C                       &kp V           &kp B           &kp N             &kp M            &as COMMA          &as DOT      &as FSLH
+&kp Q        &kp W        &kp E                       &kp R              &kp T            &kp Y              &kp U             &kp I              &kp O        &kp P
+&hml LGUI A  &hml LALT S  &hml LSHFT D                &hml LCTRL F       &kp G            &kp H              &hmr LCTRL J      &hmr RSHFT K       &hmr LALT L  &hmr LGUI SEMI
+&kp Z        &kp X        &kp C                       &kp V              &kp B            &kp N              &kp M             &as COMMA          &as DOT      &as FSLH
                           &enter_ctrl LCTRL KP_ENTER  &lt_spc NUM SPACE  &lt_dm_nvs FN 6  &magic_shift FN 0  &lt_bs_del NUM 0  &dm DM_SLOT_NVS 7
             >;
         };
@@ -668,7 +698,7 @@
             bindings = <
 &as GRAVE      &as N7  &as N8  &as N9  &trans  &trans  &trans    &trans    &as MINUS  &as EQUAL
 &kp N0         &as N1  &as N2  &as N3  &trans  &trans  &kp LPAR  &kp LBRC  &kp LBKT   &as SINGLE_QUOTE
-&kp LS(LG(S))  &as N4  &as N5  &as N6  &trans  &as_pair QUESTION COMMA  &kp RPAR  &kp RBRC  &kp RBKT   &trans
+&kp LS(LG(S))  &as N4  &as N5  &as N6  &trans  &trans  &kp RPAR  &kp RBRC  &kp RBKT   &as_pair QUESTION KP_COMMA
                        &trans  &trans  &trans  &trans  &trans    &trans
             >;
         };
@@ -686,19 +716,19 @@
         layer_Sys {
             display-name = "Sys";
             bindings = <
-&bt BT_SEL 0    &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_CLR   &trans       &out OUT_USB  &out OUT_BLE  &trans  &trans
+&bt BT_SEL 0    &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3         &bt BT_CLR   &trans       &out OUT_USB         &out OUT_BLE      &trans  &trans
 &trans          &trans        &base_only    &tog SWAP_HANDS_GEN  &bootloader  &bootloader  &tog SWAP_HANDS_GEN  &tog_graphite_ex  &trans  &tog_qwerty_ex
-&studio_unlock  &trans        &trans        &trans        &sys_reset   &sys_reset   &trans        &trans        &trans  &studio_unlock
-                              &trans        &trans        &trans       &trans       &trans        &trans
+&studio_unlock  &trans        &trans        &trans               &sys_reset   &sys_reset   &trans               &trans            &trans  &studio_unlock
+                              &trans        &trans               &trans       &trans       &trans               &trans
             >;
         };
 
         layer_Mouse {
             display-name = "Mouse";
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans  &trans          &kp PAGE_UP   &kp PG_DN       &trans
-&trans  &trans  &trans  &trans  &trans  &trans  &mmv MOVE_LEFT  &mmv MOVE_UP  &mmv MOVE_DOWN  &mmv MOVE_RIGHT
-&trans  &trans  &trans  &trans  &trans  &trans  &mkp LCLK       &mkp MCLK     &mkp RCLK       &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans          &kp PAGE_UP   &kp PG_DN       &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &mmv MOVE_LEFT  &mmv MOVE_UP  &mmv MOVE_DOWN  &mmv MOVE_RIGHT
+&trans  &trans  &trans  &trans  &trans  &trans      &mkp LCLK       &mkp MCLK     &mkp RCLK       &trans
                 &trans  &trans  &trans  &tog MOUSE  &trans          &trans
             >;
         };
@@ -706,10 +736,10 @@
         layer_Macro {
             display-name = "Macro";
             bindings = <
-&dm DM_SLOT_NVS 0 &dm DM_SLOT_NVS 1 &dm DM_SLOT_NVS 2 &dm DM_SLOT_NVS 3 &none &none &dm DM_SLOT_NVS 4 &dm DM_SLOT_NVS 5 &dm DM_SLOT_NVS 6 &dm DM_SLOT_NVS 7
-&dm DM_SLOT_RAM 0 &dm DM_SLOT_RAM 1 &dm DM_SLOT_RAM 2 &dm DM_SLOT_RAM 3 &none &none &dm DM_SLOT_RAM 4 &dm DM_SLOT_RAM 5 &dm DM_SLOT_RAM 6 &dm DM_SLOT_RAM 7
-&none &dm DM_FEEDBACK_DEC 0 &dm DM_FEEDBACK_INC 0 &kp QMARK &dm DM_MOV 0 &none &none &none &none &none
-                            &dm DM_REC 0 &dm DM_STP 0 &dm DM_DEL 0 &dm DM_STATE 0 &tog MACRO &none
+&dm DM_SLOT_NVS 0  &dm DM_SLOT_NVS 1      &dm DM_SLOT_NVS 2      &dm DM_SLOT_NVS 3  &none         &none           &dm DM_SLOT_NVS 4  &dm DM_SLOT_NVS 5  &dm DM_SLOT_NVS 6  &dm DM_SLOT_NVS 7
+&dm DM_SLOT_RAM 0  &dm DM_SLOT_RAM 1      &dm DM_SLOT_RAM 2      &dm DM_SLOT_RAM 3  &none         &none           &dm DM_SLOT_RAM 4  &dm DM_SLOT_RAM 5  &dm DM_SLOT_RAM 6  &dm DM_SLOT_RAM 7
+&none              &dm DM_FEEDBACK_DEC 0  &dm DM_FEEDBACK_INC 0  &kp QMARK          &dm DM_MOV 0  &none           &none              &none              &none              &none
+                                          &dm DM_REC 0           &dm DM_STP 0       &dm DM_DEL 0  &dm DM_STATE 0  &tog MACRO         &none
             >;
         };
     };
