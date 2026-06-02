@@ -1562,9 +1562,15 @@ text.br, use.br { fill: var(--color-sys); }
 </g>
 <g transform="translate(480, 140)" class="key keypos-27">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
+<text x="0" y="1" class="key tap">
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_STYLE_T…</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">0</tspan>
+</text>
 </g>
 <g transform="translate(540, 140)" class="key keypos-28">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
+<text x="0" y="1" class="key tap">
+<tspan x="0" dy="-1.2em" style="font-size: 64%">&amp;dm</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">DM_ERASE_T…</tspan><tspan x="0" dy="1.2em" style="font-size: 64%">0</tspan>
+</text>
 </g>
 <g transform="translate(600, 140)" class="key keypos-29">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
