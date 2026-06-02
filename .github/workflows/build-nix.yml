@@ -27,7 +27,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add config/dasbob.keymap
           git diff --staged --quiet || git commit -m "Generate swap-hands layer [skip ci]"
-          git push
+          git pull --rebase && git push
 
   build:
     needs: prepare
@@ -62,4 +62,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add draw/*.svg
           git diff --staged --quiet || git commit -m "Update keymap images [skip ci]"
-          git push
+          git pull --rebase && git push
