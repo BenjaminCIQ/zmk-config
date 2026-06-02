@@ -289,6 +289,7 @@ text.br, use.br { fill: var(--color-sys); }
 </text>
 <text x="-24" y="-22" class="key tl">.</text>
 <text x="24" y="-22" class="key tr"><tspan style="font-size: 78%">Ctl+Gui+→</tspan></text>
+<text x="-24" y="22" class="key bl"><tspan style="font-size: 64%">&amp;dm DM_STY…</tspan></text>
 <text x="24" y="22" class="key br"><tspan style="font-size: 64%">Middle Cli…</tspan></text>
 </g>
 <g transform="translate(540, 140)" class="key keypos-28">
@@ -298,6 +299,7 @@ text.br, use.br { fill: var(--color-sys); }
 </text>
 <text x="-24" y="-22" class="key tl">-</text>
 <text x="24" y="-22" class="key tr"><tspan style="font-size: 78%">Sft+Gui+←</tspan></text>
+<text x="-24" y="22" class="key bl"><tspan style="font-size: 64%">&amp;dm DM_ERA…</tspan></text>
 <text x="24" y="22" class="key br"><tspan style="font-size: 64%">Right Click</tspan></text>
 </g>
 <g transform="translate(600, 140)" class="key keypos-29">
