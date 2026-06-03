@@ -250,10 +250,18 @@
             quick-tap-ms = <200>;
         };
 
+        ctrl_bs: ctrl_bs {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&macro_del_word>, <&kp BACKSPACE>;
+
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
         bs_del: bs_del {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
-            bindings = <&macro_del_word>, <&kp DEL>;
+            bindings = <&ctrl_bs>, <&kp DEL>;
 
             mods = <(MOD_LSFT|MOD_RSFT)>;
             keep-mods = <MOD_RSFT>;
@@ -352,14 +360,6 @@
             toggle-mode = "off";
         };
 
-        delWord_bspc: delWord_bspc {
-            compatible = "zmk,behavior-mod-morph";
-            label = "DELWORD_BSPC";
-            bindings = <&macro_del_word>, <&kp BACKSPACE>;
-
-            #binding-cells = <0>;
-            mods = <(MOD_LCTL)>;
-        };
     };
 
     macros {
