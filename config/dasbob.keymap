@@ -253,7 +253,7 @@
         bs_del: bs_del {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
-            bindings = <&kp BSPC>, <&kp DEL>;
+            bindings = <&macro_del_word>, <&kp DEL>;
 
             mods = <(MOD_LSFT|MOD_RSFT)>;
             keep-mods = <MOD_RSFT>;
@@ -350,6 +350,15 @@
             compatible = "zmk,behavior-toggle-layer";
             #binding-cells = <1>;
             toggle-mode = "off";
+        };
+
+        delWord_bspc: delWord_bspc {
+            compatible = "zmk,behavior-mod-morph";
+            label = "DELWORD_BSPC";
+            bindings = <&macro_del_word>, <&kp BACKSPACE>;
+
+            #binding-cells = <0>;
+            mods = <(MOD_LCTL)>;
         };
     };
 
@@ -515,6 +524,13 @@
                 <&macro_tap>,
                 <&tog_off QWERTY>;
         };
+
+        macro_del_word: macro_del_word {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp LC(BACKSPACE)>;
+            label = "MACRO_DEL_WORD";
+        };
     };
 
     combos {
@@ -578,7 +594,7 @@
 
         combo_bspc {
             bindings = <&bs_del>;
-            key-positions = <26 16>;
+            key-positions = <13 14>;
             layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
@@ -634,7 +650,7 @@
 
         combo_space {
             bindings = <&kp SPACE>;
-            key-positions = <13 14>;
+            key-positions = <15 16>;
             layers = <LAYERS_TYPING>;
             timeout-ms = <35>;
             require-prior-idle-ms = <150>;
@@ -666,10 +682,10 @@
         layer_SWP_GEN {
             display-name = "SWP_GEN";
             bindings = <
-                &as SEMI &kp P &kp U &kp F &kp J &kp B &kp W &kp R &kp D &kp Q
-                &hml LGUI I &hml LALT O &hml LSHFT E &hml LCTRL N &kp Y &kp G &hmr LCTRL T &hmr RSHFT H &hmr LALT S &hmr LGUI A
-                &as FSLH &as DOT &as COMMA &kp L &kp K &kp V &kp C &kp M &kp X &kp Z
-                &dm DM_SLOT_NVS 7 &lt_bs_del NUM 0 &magic_shift FN 0 &lt_dm_nvs FN 6 &lt_spc NUM SPACE &enter_ctrl LCTRL KP_ENTER
+&as SEMI     &kp P        &kp U              &kp F             &kp J              &kp B            &kp W              &kp R                       &kp D        &kp Q
+&hml LGUI I  &hml LALT O  &hml LSHFT E       &hml LCTRL N      &kp Y              &kp G            &hmr LCTRL T       &hmr RSHFT H                &hmr LALT S  &hmr LGUI A
+&as FSLH     &as DOT      &as COMMA          &kp L             &kp K              &kp V            &kp C              &kp M                       &kp X        &kp Z
+                          &dm DM_SLOT_NVS 7  &lt_bs_del NUM 0  &magic_shift FN 0  &lt_dm_nvs FN 6  &lt_spc NUM SPACE  &enter_ctrl LCTRL KP_ENTER
             >;
         };
 
@@ -736,10 +752,10 @@
         layer_Macro {
             display-name = "Macro";
             bindings = <
-&dm DM_SLOT_NVS 0  &dm DM_SLOT_NVS 1      &dm DM_SLOT_NVS 2      &dm DM_SLOT_NVS 3  &none         &none           &dm DM_SLOT_NVS 4      &dm DM_SLOT_NVS 5      &dm DM_SLOT_NVS 6      &dm DM_SLOT_NVS 7
-&dm DM_SLOT_RAM 0  &dm DM_SLOT_RAM 1      &dm DM_SLOT_RAM 2      &dm DM_SLOT_RAM 3  &none         &none           &dm DM_SLOT_RAM 4      &dm DM_SLOT_RAM 5      &dm DM_SLOT_RAM 6      &dm DM_SLOT_RAM 7
-&none              &dm DM_FEEDBACK_DEC 0  &dm DM_FEEDBACK_INC 0  &kp QMARK          &dm DM_MOV 0  &none           &none                  &dm DM_STYLE_TOGGLE 0  &dm DM_ERASE_TOGGLE 0  &none
-                                          &dm DM_REC 0           &dm DM_STP 0       &dm DM_DEL 0  &dm DM_STATE 0  &tog MACRO             &none
+&dm DM_SLOT_NVS 0  &dm DM_SLOT_NVS 1      &dm DM_SLOT_NVS 2      &dm DM_SLOT_NVS 3  &none         &none           &dm DM_SLOT_NVS 4  &dm DM_SLOT_NVS 5      &dm DM_SLOT_NVS 6      &dm DM_SLOT_NVS 7
+&dm DM_SLOT_RAM 0  &dm DM_SLOT_RAM 1      &dm DM_SLOT_RAM 2      &dm DM_SLOT_RAM 3  &none         &none           &dm DM_SLOT_RAM 4  &dm DM_SLOT_RAM 5      &dm DM_SLOT_RAM 6      &dm DM_SLOT_RAM 7
+&none              &dm DM_FEEDBACK_DEC 0  &dm DM_FEEDBACK_INC 0  &kp QMARK          &dm DM_MOV 0  &none           &none              &dm DM_STYLE_TOGGLE 0  &dm DM_ERASE_TOGGLE 0  &none
+                                          &dm DM_REC 0           &dm DM_STP 0       &dm DM_DEL 0  &dm DM_STATE 0  &tog MACRO         &none
             >;
         };
     };
