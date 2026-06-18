@@ -298,7 +298,7 @@ text.br, use.br { fill: var(--color-sys); }
 <tspan x="0" dy="-0.6em">&amp;as</tspan><tspan x="0" dy="1.2em">DOT</tspan>
 </text>
 <text x="-24" y="-22" class="key tl">-</text>
-<text x="24" y="-22" class="key tr"><tspan style="font-size: 78%">Sft+Gui+←</tspan></text>
+<text x="24" y="-22" class="key tr">Gui+←</text>
 <text x="-24" y="22" class="key bl"><tspan style="font-size: 64%">&amp;dm DM_ERA…</tspan></text>
 <text x="24" y="22" class="key br"><tspan style="font-size: 64%">Right Click</tspan></text>
 </g>
@@ -308,7 +308,7 @@ text.br, use.br { fill: var(--color-sys); }
 <tspan x="0" dy="-0.6em">&amp;as</tspan><tspan x="0" dy="1.2em">FSLH</tspan>
 </text>
 <text x="-24" y="-22" class="key tl">/</text>
-<text x="24" y="-22" class="key tr"><tspan style="font-size: 78%">Sft+Gui+→</tspan></text>
+<text x="24" y="-22" class="key tr">Gui+→</text>
 </g>
 <g transform="translate(150, 196)" class="key keypos-30">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
@@ -321,9 +321,10 @@ text.br, use.br { fill: var(--color-sys); }
 </g>
 <g transform="translate(210, 196)" class="key keypos-31">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
-<text x="0" y="1" class="key tap">Spc</text>
+<text x="0" y="1" class="key tap"><tspan style="font-size: 78%">BACKSPACE</tspan></text>
 <text x="0" y="22" class="key hold">NUM</text>
-<text x="-24" y="-22" class="key tl">Spc</text>
+<text x="0" y="-22" class="key shifted">Del</text>
+<text x="-24" y="-22" class="key tl"><tspan style="font-size: 78%">BACKSPACE</tspan></text>
 <text x="-24" y="22" class="key bl"><tspan style="font-size: 64%">&amp;dm DM_STP…</tspan></text>
 </g>
 <g transform="translate(270, 196)" class="key keypos-32">
@@ -345,10 +346,9 @@ text.br, use.br { fill: var(--color-sys); }
 </g>
 <g transform="translate(420, 196)" class="key keypos-34">
 <rect rx="6" ry="6" x="-28" y="-26" width="56" height="52" class="key"/>
-<text x="0" y="1" class="key tap"><tspan style="font-size: 64%">&amp;macro_del…</tspan></text>
+<text x="0" y="1" class="key tap">Spc</text>
 <text x="0" y="22" class="key hold">NUM</text>
-<text x="0" y="-22" class="key shifted">Del</text>
-<text x="-24" y="-22" class="key tl"><tspan style="font-size: 64%">&amp;macro_del…</tspan></text>
+<text x="-24" y="-22" class="key tl">Spc</text>
 <text x="-24" y="22" class="key bl">Macro</text>
 </g>
 <g transform="translate(480, 196)" class="key keypos-35">
@@ -503,7 +503,7 @@ text.br, use.br { fill: var(--color-sys); }
 </g>
 <g class="combo combopos-7">
 <rect rx="6" ry="6" x="226" y="71" width="28" height="26" class="combo"/>
-<text x="240" y="84" class="combo tap"><tspan style="font-size: 64%">&amp;macro_del…</tspan></text>
+<text x="240" y="84" class="combo tap"><tspan style="font-size: 78%">BACKSPACE</tspan></text>
 <text x="240" y="75" class="combo shifted">Del</text>
 </g>
 <g class="combo combopos-8">
