@@ -55,7 +55,7 @@ manifest:
     - name: zmk-dynamic-macros
       path: modules/zmk/dynamic-macros
       url: https://github.com/BenjaminCIQ/zmk-dynamic-macros
-      revision: docs/architecture-redesign
+      revision: feat/playback-buffer
 
     # Only source necessary Zephyr modules. Remove this entire section to restore
     # the default (needed for less common hardware).
